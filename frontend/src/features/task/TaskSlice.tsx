@@ -166,17 +166,38 @@ export const {
   setEditDialogOpen,
 } = slice.actions;
 
+const priorityToSortValue = (p: PriorityValue) =>
+  p == "H" ? 3 : p == "M" ? 2 : 1;
+
+const sortTasks = (ta: ITask, tb: ITask) => {
+  const va = priorityToSortValue(ta.priority);
+  const vb = priorityToSortValue(tb.priority);
+
+  return vb - va;
+};
+
 export const updateTasksByColumn = (
   tasksByColumn: TasksByColumn
 ): AppThunk => async (dispatch: AppDispatch, getState: () => RootState) => {
   const state = getState();
   const previousTasksByColumn = state.task.byColumn;
+  const tasksById = state.task.byId;
   const boardId = state.board.detail?.id;
+
+  const sortedTasksByColumn: TasksByColumn = {};
+  Object.keys(tasksByColumn).forEach((k) => {
+    const sortedtaskIds = tasksByColumn[k]
+      .map((id) => tasksById[id])
+      .sort(sortTasks)
+      .map((task) => task.id);
+    sortedTasksByColumn[k] = sortedtaskIds;
+  });
+
   try {
-    dispatch(setTasksByColumn(tasksByColumn));
+    dispatch(setTasksByColumn(sortedTasksByColumn));
     await api.post(API_SORT_TASKS, {
       board: boardId,
-      tasks: tasksByColumn,
+      tasks: sortedTasksByColumn,
       order: Object.values(tasksByColumn).flat(),
     });
   } catch (err) {
