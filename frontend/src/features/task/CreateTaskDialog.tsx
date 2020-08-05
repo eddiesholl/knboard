@@ -120,6 +120,8 @@ const CreateTaskDialog = () => {
         labels: labels.map((l) => l.id),
         assignees: assignees.map((a) => a.id),
         priority: priority.value,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        due_date: null,
       };
       dispatch(createTask(newTask));
     }
