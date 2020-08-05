@@ -43,9 +43,9 @@ context("Task", () => {
   it("should move task down successfully", () => {
     cy.route("POST", "/api/sort/task/", "").as("sortTasks");
 
-    cy.expectTasks("col-3", ["task-5", "task-4"]);
+    cy.expectTasks("col-1", ["task-1", "task-2"]);
 
-    cy.draggable("task-5")
+    cy.draggable("task-1")
       .focus()
       .trigger("keydown", { keyCode: keyCodes.space })
       .trigger("keydown", { keyCode: keyCodes.arrowDown, force: true })
@@ -53,7 +53,7 @@ context("Task", () => {
       .trigger("keydown", { keyCode: keyCodes.space, force: true })
       .then(() => {
         cy.wait("@sortTasks");
-        cy.expectTasks("col-3", ["task-4", "task-5"]);
+        cy.expectTasks("col-1", ["task-2", "task-1"]);
       });
   });
 
@@ -97,7 +97,7 @@ context("Task", () => {
         cy.wait("@sortTasks");
         cy.wait(200);
         cy.expectTasks("col-3", ["task-4"]);
-        cy.expectTasks("col-1", ["task-1", "task-5", "task-2"]);
+        cy.expectTasks("col-1", ["task-5", "task-1", "task-2"]);
       });
   });
 
@@ -218,7 +218,7 @@ context("Task", () => {
       });
 
     cy.wait("@sortTasks").then(() => {
-      cy.expectTasks("col-3", ["task-1", "task-5", "task-4"]);
+      cy.expectTasks("col-3", ["task-5", "task-4", "task-1"]);
       cy.expectTasks("col-1", ["task-2"]);
     });
   });
