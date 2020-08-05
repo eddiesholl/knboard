@@ -38,6 +38,7 @@ interface PatchFields {
   priority: PriorityValue;
   labels: Id[];
   assignees: Id[];
+  due_date: string | null;
 }
 
 export const patchTask = createAsyncThunk<

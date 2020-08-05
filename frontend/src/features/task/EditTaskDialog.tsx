@@ -33,6 +33,11 @@ import {
   selectColumnsEntities,
 } from "features/column/ColumnSlice";
 import { Autocomplete } from "@material-ui/lab";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import { createMdEditorStyles, descriptionStyles } from "styles";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
@@ -177,6 +182,7 @@ const EditTaskDialog = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
+  const [dueDate, setDueDate] = useState<string | null>(null);
   const titleTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<MdEditor>(null);
@@ -188,6 +194,7 @@ const EditTaskDialog = () => {
     if (taskId && tasksById[taskId]) {
       setDescription(tasksById[taskId].description);
       setTitle(tasksById[taskId].title);
+      setDueDate(tasksById[taskId].due_date);
     }
   }, [open, taskId]);
 
@@ -345,6 +352,14 @@ const EditTaskDialog = () => {
         fields: { labels: newLabels.map((label) => label.id) },
       })
     );
+  };
+
+  const handleDateChange = (d: any, value: any) => {
+    console.log(d);
+    console.log(value);
+    setDueDate(value);
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    dispatch(patchTask({ id: taskId, fields: { due_date: value } }));
   };
 
   return (
@@ -511,6 +526,23 @@ const EditTaskDialog = () => {
               margin-bottom: 2rem;
             `}
           />
+
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="yyyy-MM-dd"
+              margin="normal"
+              id="date-picker-inline"
+              label="Due date"
+              value={dueDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
+
           <ButtonsContainer>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faLock} />}
