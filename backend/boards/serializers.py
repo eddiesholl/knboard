@@ -79,6 +79,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "assignees",
             "task_order",
             "column",
+            "due_date",
         ]
 
 
