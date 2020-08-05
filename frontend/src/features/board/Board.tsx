@@ -8,7 +8,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import Column from "features/column";
-import { IColumn, ITask, PriorityValue } from "types";
+import { IColumn } from "types";
 import reorder, { reorderTasks } from "utils/reorder";
 import { RootState } from "store";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,16 +52,6 @@ const RightMargin = styled.div`
     width: 0.5rem;
   }
 `;
-
-const priorityToSortValue = (p: PriorityValue) =>
-  p == "H" ? 3 : p == "M" ? 2 : 1;
-
-const sortTasks = (ta: ITask, tb: ITask) => {
-  const va = priorityToSortValue(ta.priority);
-  const vb = priorityToSortValue(tb.priority);
-
-  return vb - va;
-};
 
 const Board = () => {
   const detail = useSelector((state: RootState) => state.board.detail);
@@ -144,9 +134,9 @@ const Board = () => {
                     id={column.id}
                     title={column.title}
                     index={index}
-                    tasks={tasksByColumn[column.id]
-                      .map((taskId) => tasksById[taskId])
-                      .sort(sortTasks)}
+                    tasks={tasksByColumn[column.id].map(
+                      (taskId) => tasksById[taskId]
+                    )}
                   />
                 ))}
                 {provided.placeholder}
