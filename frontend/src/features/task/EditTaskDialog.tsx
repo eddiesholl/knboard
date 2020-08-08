@@ -356,13 +356,16 @@ const EditTaskDialog = () => {
   };
 
   const handleDateChange = (date: MaterialUiPickersDate) => {
-    if (date != null && date.toString() != "Invalid Date") {
-      const dateString = format(new Date(date), "yyyy-MM-dd");
-
-      setDueDate(dateString);
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
+    if (date != null && date.toString() == "Invalid Date") {
+      return;
     }
+
+    const dateString =
+      date == null ? null : format(new Date(date), "yyyy-MM-dd");
+
+    setDueDate(dateString);
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
   };
 
   return (
