@@ -8,6 +8,11 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import { RootState } from "store";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "@emotion/styled";
@@ -35,6 +40,8 @@ import { selectAllLabels } from "features/label/LabelSlice";
 import { getSaveShortcutLabel } from "utils/shortcuts";
 import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
+import { format } from "date-fns";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 
 const mdParser = new MarkdownIt();
 
@@ -79,6 +86,7 @@ const CreateTaskDialog = () => {
   const [titleTouched, setTitleTouched] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string | null>(null);
   const [assignees, setAssignees] = useState<BoardMember[]>([]);
   const [priority, setPriority] = useState<Priority | null>({
     value: "M",
@@ -121,7 +129,7 @@ const CreateTaskDialog = () => {
         assignees: assignees.map((a) => a.id),
         priority: priority.value,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        due_date: null,
+        due_date: dueDate,
       };
       dispatch(createTask(newTask));
     }
@@ -130,6 +138,14 @@ const CreateTaskDialog = () => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.keyCode == Key.Enter && e.metaKey) {
       handleCreate();
+    }
+  };
+
+  const handleDateChange = (date: MaterialUiPickersDate) => {
+    if (date != null && date.toString() != "Invalid Date") {
+      const dateString = format(new Date(date), "yyyy-MM-dd");
+
+      setDueDate(dateString);
     }
   };
 
@@ -250,6 +266,22 @@ const CreateTaskDialog = () => {
             width: 100%;
           `}
         />
+
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="dd-MM-yyyy"
+            margin="normal"
+            id="date-picker-inline"
+            label="Due date"
+            value={dueDate}
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+          />
+        </MuiPickersUtilsProvider>
       </Content>
 
       <Footer theme={theme}>
