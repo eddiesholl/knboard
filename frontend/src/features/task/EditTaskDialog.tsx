@@ -355,12 +355,6 @@ const EditTaskDialog = () => {
     );
   };
 
-  function pad(number: number) {
-    if (number < 10) {
-      return "0" + number;
-    }
-    return number;
-  }
   const handleDateChange = (date: MaterialUiPickersDate) => {
     if (date != null && date.toString() != "Invalid Date") {
       const dateString = format(new Date(date), "yyyy-MM-dd");
