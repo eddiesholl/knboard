@@ -59,7 +59,7 @@ import {
   selectAllLabels,
   selectLabelEntities,
 } from "features/label/LabelSlice";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { getSaveShortcutLabel } from "utils/shortcuts";
 import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
@@ -363,12 +363,8 @@ const EditTaskDialog = () => {
   }
   const handleDateChange = (date: MaterialUiPickersDate) => {
     if (date != null && date.toString() != "Invalid Date") {
-      const dateString =
-        date.getUTCFullYear() +
-        "-" +
-        pad(date.getUTCMonth() + 1) +
-        "-" +
-        pad(date.getUTCDate());
+      const dateString = format(new Date(date), "yyyy-MM-dd");
+
       setDueDate(dateString);
       // eslint-disable-next-line @typescript-eslint/camelcase
       dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
