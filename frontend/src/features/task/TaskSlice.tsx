@@ -13,10 +13,12 @@ import { deleteLabel } from "features/label/LabelSlice";
 import { removeBoardMember } from "features/member/MemberSlice";
 
 type TasksById = Record<string, ITask>;
+type TasksByParent = Record<string, Id[]>;
 
 interface InitialState {
   byColumn: TasksByColumn;
   byId: TasksById;
+  byParent: TasksByParent;
   createLoading: boolean;
   createDialogOpen: boolean;
   createDialogColumn: Id | null;
@@ -26,6 +28,7 @@ interface InitialState {
 export const initialState: InitialState = {
   byColumn: {},
   byId: {},
+  byParent: {},
   createLoading: false,
   createDialogOpen: false,
   createDialogColumn: null,
@@ -100,17 +103,30 @@ export const slice = createSlice({
     builder.addCase(fetchBoardById.fulfilled, (state, action) => {
       const byColumn: TasksByColumn = {};
       const byId: TasksById = {};
+      const byParent: TasksByParent = {};
       for (const col of action.payload.columns) {
         for (const task of col.tasks) {
           byId[task.id] = task;
+
+          const parentOfThisTask = task.parent_task;
+          if (parentOfThisTask != null) {
+            const parentList = byParent[parentOfThisTask];
+            if (!parentList) {
+              byParent[parentOfThisTask] = [task.id];
+            } else {
+              parentList.push(task.id);
+            }
+          }
         }
         byColumn[col.id] = col.tasks.map((t) => t.id);
       }
       state.byColumn = byColumn;
       state.byId = byId;
+      state.byParent = byParent;
     });
     builder.addCase(patchTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
+      // TODO update byParent
     });
     builder.addCase(createTask.pending, (state) => {
       state.createLoading = true;

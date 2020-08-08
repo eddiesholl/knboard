@@ -180,6 +180,7 @@ const EditTaskDialog = () => {
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const taskId = useSelector((state: RootState) => state.task.editDialogOpen);
   const tasksById = useSelector((state: RootState) => state.task.byId);
+  const tasksByParent = useSelector((state: RootState) => state.task.byParent);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
@@ -381,6 +382,8 @@ const EditTaskDialog = () => {
     dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
   };
 
+  console.log(tasksByParent);
+
   return (
     <Dialog
       open={open}
@@ -554,9 +557,38 @@ const EditTaskDialog = () => {
             autoHighlight
             openOnFocus
             blurOnSelect
-            options={Object.values(tasksById).map((t) => t.id)}
+            options={Object.values(tasksById)
+              .sort((a, b) => {
+                const stringCompareResult = a.title.localeCompare(b.title);
+                const aIsParent = Object.keys(tasksByParent).includes(
+                  a.id.toString()
+                );
+                const bIsParent = Object.keys(tasksByParent).includes(
+                  b.id.toString()
+                );
+
+                if (aIsParent) {
+                  if (bIsParent) {
+                    return stringCompareResult;
+                  } else {
+                    return -1;
+                  }
+                } else {
+                  if (bIsParent) {
+                    return 1;
+                  } else {
+                    return stringCompareResult;
+                  }
+                }
+              })
+              .map((t) => t.id)}
             getOptionLabel={(option) => tasksById[option].title}
             value={parentTask}
+            groupBy={(option) =>
+              Object.keys(tasksByParent).includes(option.toString())
+                ? "Projects"
+                : "Tasks"
+            }
             onChange={(_: any, newParent: Id | null) =>
               handleParentChange(newParent)
             }
