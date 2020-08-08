@@ -38,6 +38,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { createMdEditorStyles, descriptionStyles } from "styles";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
@@ -354,12 +355,24 @@ const EditTaskDialog = () => {
     );
   };
 
-  const handleDateChange = (d: any, value: any) => {
-    console.log(d);
-    console.log(value);
-    setDueDate(value);
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    dispatch(patchTask({ id: taskId, fields: { due_date: value } }));
+  function pad(number: number) {
+    if (number < 10) {
+      return "0" + number;
+    }
+    return number;
+  }
+  const handleDateChange = (date: MaterialUiPickersDate) => {
+    if (date != null && date.toString() != "Invalid Date") {
+      const dateString =
+        date.getUTCFullYear() +
+        "-" +
+        pad(date.getUTCMonth() + 1) +
+        "-" +
+        pad(date.getUTCDate());
+      setDueDate(dateString);
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
+    }
   };
 
   return (
@@ -531,7 +544,7 @@ const EditTaskDialog = () => {
             <KeyboardDatePicker
               disableToolbar
               variant="inline"
-              format="yyyy-MM-dd"
+              format="dd-MM-yyyy"
               margin="normal"
               id="date-picker-inline"
               label="Due date"
