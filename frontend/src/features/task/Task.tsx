@@ -18,6 +18,7 @@ import TaskLabels from "./TaskLabels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { selectMembersEntities } from "features/member/MemberSlice";
+import TaskDueDate from "./TaskDueDate";
 
 const getBackgroundColor = (isDragging: boolean, isGroupedOver: boolean) => {
   if (isDragging) {
@@ -187,6 +188,7 @@ const Task = ({ task: task, style, index }: Props) => {
           <Content>
             <TextContent>{task.title}</TextContent>
             <TaskId>id: {task.id}</TaskId>
+            <TaskDueDate task={task} />
             <TaskLabels task={task} />
             <TaskFooter task={task} />
           </Content>
