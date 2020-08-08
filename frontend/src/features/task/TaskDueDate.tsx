@@ -34,7 +34,7 @@ const TaskDueDate = ({ task }: Props) => {
   }
 
   const dueDate = new Date(task.due_date);
-  const distance = differenceInDays(dueDate, new Date());
+  const distance = differenceInDays(new Date(), dueDate);
   const opacity = Math.max(Math.min(7, distance + 7), 0) / 7;
   const expired = distance >= 0;
 
