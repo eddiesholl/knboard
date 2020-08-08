@@ -54,6 +54,7 @@ export interface ITask {
   assignees: Id[];
   priority: PriorityValue;
   due_date: string | null;
+  parent_task: Id | null;
 }
 
 export interface NewTask extends Omit<ITask, "id" | "created" | "modified"> {

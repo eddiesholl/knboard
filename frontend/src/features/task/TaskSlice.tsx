@@ -39,6 +39,7 @@ interface PatchFields {
   labels: Id[];
   assignees: Id[];
   due_date: string | null;
+  parent_task: Id | null;
 }
 
 export const patchTask = createAsyncThunk<

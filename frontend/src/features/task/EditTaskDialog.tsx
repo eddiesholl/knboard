@@ -184,6 +184,7 @@ const EditTaskDialog = () => {
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
   const [dueDate, setDueDate] = useState<string | null>(null);
+  const [parentTask, setParentTask] = useState<Id | null>(null);
   const titleTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<MdEditor>(null);
@@ -196,6 +197,7 @@ const EditTaskDialog = () => {
       setDescription(tasksById[taskId].description);
       setTitle(tasksById[taskId].title);
       setDueDate(tasksById[taskId].due_date);
+      setParentTask(tasksById[taskId].parent_task);
     }
   }, [open, taskId]);
 
@@ -351,6 +353,17 @@ const EditTaskDialog = () => {
       patchTask({
         id: taskId,
         fields: { labels: newLabels.map((label) => label.id) },
+      })
+    );
+  };
+
+  const handleParentChange = (newParent: Id | null) => {
+    setParentTask(newParent);
+    dispatch(
+      patchTask({
+        id: taskId,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        fields: { parent_task: newParent },
       })
     );
   };
@@ -526,6 +539,31 @@ const EditTaskDialog = () => {
               ))
             }
             renderOption={(option) => <LabelChip label={option} size="small" />}
+            css={css`
+              width: 100%;
+              margin-top: 1rem;
+              margin-bottom: 2rem;
+            `}
+          />
+
+          <Autocomplete
+            id="parent-select"
+            data-testid="edit-parent"
+            size="small"
+            filterSelectedOptions
+            autoHighlight
+            openOnFocus
+            blurOnSelect
+            options={Object.values(tasksById).map((t) => t.id)}
+            getOptionLabel={(option) => tasksById[option].title}
+            value={parentTask}
+            onChange={(_: any, newParent: Id | null) =>
+              handleParentChange(newParent)
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Project" variant="outlined" />
+            )}
+            renderOption={(option) => tasksById[option].title}
             css={css`
               width: 100%;
               margin-top: 1rem;

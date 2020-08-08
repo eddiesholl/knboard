@@ -130,6 +130,8 @@ const CreateTaskDialog = () => {
         priority: priority.value,
         // eslint-disable-next-line @typescript-eslint/camelcase
         due_date: dueDate,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        parent_task: null,
       };
       dispatch(createTask(newTask));
     }
