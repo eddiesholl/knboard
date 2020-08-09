@@ -382,8 +382,6 @@ const EditTaskDialog = () => {
     dispatch(patchTask({ id: taskId, fields: { due_date: dateString } }));
   };
 
-  console.log(tasksByParent);
-
   return (
     <Dialog
       open={open}
