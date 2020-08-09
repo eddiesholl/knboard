@@ -80,6 +80,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "task_order",
             "column",
             "due_date",
+            "parent_task"
         ]
 
 

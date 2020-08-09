@@ -13,10 +13,12 @@ import { deleteLabel } from "features/label/LabelSlice";
 import { removeBoardMember } from "features/member/MemberSlice";
 
 type TasksById = Record<string, ITask>;
+type TasksByParent = Record<string, Id[]>;
 
 interface InitialState {
   byColumn: TasksByColumn;
   byId: TasksById;
+  byParent: TasksByParent;
   createLoading: boolean;
   createDialogOpen: boolean;
   createDialogColumn: Id | null;
@@ -26,6 +28,7 @@ interface InitialState {
 export const initialState: InitialState = {
   byColumn: {},
   byId: {},
+  byParent: {},
   createLoading: false,
   createDialogOpen: false,
   createDialogColumn: null,
@@ -39,6 +42,7 @@ interface PatchFields {
   labels: Id[];
   assignees: Id[];
   due_date: string | null;
+  parent_task: Id | null;
 }
 
 export const patchTask = createAsyncThunk<
@@ -78,6 +82,24 @@ export const deleteTask = createAsyncThunk<Id, Id>(
   }
 );
 
+const buildTasksByParent = (tasks: TasksById): TasksByParent => {
+  const byParent: TasksByParent = {};
+
+  Object.values(tasks).forEach((task) => {
+    const parentOfThisTask = task.parent_task;
+    if (parentOfThisTask != null) {
+      const parentList = byParent[parentOfThisTask];
+      if (!parentList) {
+        byParent[parentOfThisTask] = [task.id];
+      } else {
+        parentList.push(task.id);
+      }
+    }
+  });
+
+  return byParent;
+};
+
 export const slice = createSlice({
   name: "task",
   initialState,
@@ -107,9 +129,11 @@ export const slice = createSlice({
       }
       state.byColumn = byColumn;
       state.byId = byId;
+      state.byParent = buildTasksByParent(byId);
     });
     builder.addCase(patchTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
+      state.byParent = buildTasksByParent(state.byId);
     });
     builder.addCase(createTask.pending, (state) => {
       state.createLoading = true;
@@ -117,6 +141,7 @@ export const slice = createSlice({
     builder.addCase(createTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
       state.byColumn[action.payload.column].push(action.payload.id);
+      state.byParent = buildTasksByParent(state.byId);
       state.createDialogOpen = false;
       state.createLoading = false;
     });
@@ -132,6 +157,7 @@ export const slice = createSlice({
         }
       }
       delete state.byId[action.payload];
+      state.byParent = buildTasksByParent(state.byId);
     });
     builder.addCase(addColumn.fulfilled, (state, action) => {
       state.byColumn[action.payload.id] = [];
