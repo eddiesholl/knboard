@@ -32,7 +32,7 @@ import {
   Key,
 } from "const";
 import { selectAllMembers } from "features/member/MemberSlice";
-import { Priority, BoardMember, Label } from "types";
+import { Priority, BoardMember, Label, Id } from "types";
 import { createMdEditorStyles } from "styles";
 import AvatarTag from "components/AvatarTag";
 import AvatarOption from "components/AvatarOption";
@@ -83,6 +83,8 @@ const CreateTaskDialog = () => {
   const createLoading = useSelector(
     (state: RootState) => state.task.createLoading
   );
+  const tasksById = useSelector((state: RootState) => state.task.byId);
+  const tasksByParent = useSelector((state: RootState) => state.task.byParent);
   const [titleTouched, setTitleTouched] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -93,6 +95,7 @@ const CreateTaskDialog = () => {
     label: "Medium",
   });
   const [labels, setLabels] = useState<Label[]>([]);
+  const [parentTask, setParentTask] = useState<Id | null>(null);
   const xsDown = useMediaQuery(theme.breakpoints.down("xs"));
 
   const handleEditorChange = ({ text }: any) => {
@@ -131,7 +134,7 @@ const CreateTaskDialog = () => {
         // eslint-disable-next-line @typescript-eslint/camelcase
         due_date: dueDate,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        parent_task: null,
+        parent_task: parentTask,
       };
       dispatch(createTask(newTask));
     }
@@ -141,6 +144,10 @@ const CreateTaskDialog = () => {
     if (e.keyCode == Key.Enter && e.metaKey) {
       handleCreate();
     }
+  };
+
+  const handleParentChange = (newParent: Id | null) => {
+    setParentTask(newParent);
   };
 
   const handleDateChange = (date: MaterialUiPickersDate) => {
@@ -266,6 +273,60 @@ const CreateTaskDialog = () => {
           css={css`
             margin-top: 1rem;
             width: 100%;
+          `}
+        />
+
+        <Autocomplete
+          id="parent-select"
+          data-testid="edit-parent"
+          size="small"
+          filterSelectedOptions
+          autoHighlight
+          openOnFocus
+          blurOnSelect
+          options={Object.values(tasksById)
+            .sort((a, b) => {
+              const stringCompareResult = a.title.localeCompare(b.title);
+              const aIsParent = Object.keys(tasksByParent).includes(
+                a.id.toString()
+              );
+              const bIsParent = Object.keys(tasksByParent).includes(
+                b.id.toString()
+              );
+
+              if (aIsParent) {
+                if (bIsParent) {
+                  return stringCompareResult;
+                } else {
+                  return -1;
+                }
+              } else {
+                if (bIsParent) {
+                  return 1;
+                } else {
+                  return stringCompareResult;
+                }
+              }
+            })
+            .map((t) => t.id)}
+          getOptionLabel={(option) => tasksById[option].title}
+          value={parentTask}
+          groupBy={(option) =>
+            Object.keys(tasksByParent).includes(option.toString())
+              ? "Projects"
+              : "Tasks"
+          }
+          onChange={(_: any, newParent: Id | null) =>
+            handleParentChange(newParent)
+          }
+          renderInput={(params) => (
+            <TextField {...params} label="Project" variant="outlined" />
+          )}
+          renderOption={(option) => tasksById[option].title}
+          css={css`
+            width: 100%;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
           `}
         />
 
