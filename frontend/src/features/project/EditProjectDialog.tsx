@@ -22,11 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { createInfoToast } from "features/toast/ToastSlice";
 import { PRIMARY, TASK_G } from "utils/colors";
-import { Id, Priority, Label } from "types";
-import {
-  selectAllColumns,
-  selectColumnsEntities,
-} from "features/column/ColumnSlice";
+import { Priority, Label } from "types";
 import { Autocomplete } from "@material-ui/lab";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -169,7 +165,6 @@ const EditProjectDialog = () => {
   const dispatch = useDispatch();
   const labels = useSelector(selectAllLabels);
   const labelsById = useSelector(selectLabelEntities);
-  const columnsById = useSelector(selectColumnsEntities);
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const projectId = useSelector(
     (state: RootState) => state.project.editDialogOpen
