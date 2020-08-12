@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { createInfoToast } from "features/toast/ToastSlice";
 import { PRIMARY, TASK_G } from "utils/colors";
-import { IColumn, TasksByColumn, Id, Priority, Label } from "types";
+import { Id, Priority, Label } from "types";
 import {
   selectAllColumns,
   selectColumnsEntities,
@@ -167,51 +167,50 @@ const DESCRIPTION_PLACEHOLDER = "Write here...";
 const EditProjectDialog = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const columns = useSelector(selectAllColumns);
   const labels = useSelector(selectAllLabels);
   const labelsById = useSelector(selectLabelEntities);
   const columnsById = useSelector(selectColumnsEntities);
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
-  const taskId = useSelector((state: RootState) => state.task.editDialogOpen);
-  const tasksById = useSelector((state: RootState) => state.task.byId);
-  const tasksByParent = useSelector((state: RootState) => state.task.byParent);
+  const projectId = useSelector(
+    (state: RootState) => state.project.editDialogOpen
+  );
+  // const tasksById = useSelector((state: RootState) => state.task.byId);
+  const projectsById = useSelector((state: RootState) => state.project.byId);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
   const [dueDate, setDueDate] = useState<string | null>(null);
-  const [parentTask, setParentTask] = useState<Id | null>(null);
   const titleTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<MdEditor>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const xsDown = useMediaQuery(theme.breakpoints.down("xs"));
-  const open = taskId !== null;
+  const open = projectId !== null;
 
   useEffect(() => {
-    if (taskId && tasksById[taskId]) {
-      setDescription(tasksById[taskId].description);
-      setTitle(tasksById[taskId].title);
-      setDueDate(tasksById[taskId].due_date);
-      setParentTask(tasksById[taskId].parent_task);
+    if (projectId && projectsById[projectId]) {
+      setDescription(projectsById[projectId].description);
+      setTitle(projectsById[projectId].title);
+      setDueDate(projectsById[projectId].due_date);
     }
-  }, [open, taskId]);
+  }, [open, projectId]);
 
   const handleSaveTitle = () => {
-    if (taskId) {
-      dispatch(patchProject({ id: taskId, fields: { title } }));
+    if (projectId) {
+      dispatch(patchProject({ id: projectId, fields: { title } }));
     }
   };
 
   const handleSaveDescription = () => {
-    if (taskId) {
-      dispatch(patchProject({ id: taskId, fields: { description } }));
+    if (projectId) {
+      dispatch(patchProject({ id: projectId, fields: { description } }));
       setEditingDescription(false);
     }
   };
 
   const handleCancelDescription = () => {
-    if (taskId && tasksById[taskId]) {
-      setDescription(tasksById[taskId].description);
+    if (projectId && projectsById[projectId]) {
+      setDescription(projectsById[projectId].description);
       setEditingDescription(false);
     }
   };
@@ -232,7 +231,7 @@ const EditProjectDialog = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [wrapperRef, taskId, description]);
+  }, [wrapperRef, projectId, description]);
 
   useEffect(() => {
     if (editingDescription && editorRef && editorRef.current) {
@@ -246,7 +245,7 @@ const EditProjectDialog = () => {
   const findTaskColumnId = () => {
     for (const columnId in tasksByColumn) {
       for (const id of tasksByColumn[columnId]) {
-        if (id === taskId) {
+        if (id === projectId) {
           return columnId;
         }
       }
@@ -256,12 +255,11 @@ const EditProjectDialog = () => {
 
   const columnId = findTaskColumnId();
 
-  if (!taskId || !tasksById[taskId] || !columnId) {
+  if (!projectId || !projectsById[projectId] || !columnId) {
     return null;
   }
 
-  const task = tasksById[taskId];
-  const column = columnsById[columnId];
+  const project = projectsById[projectId];
 
   const handleEditorKeyDown = (e: React.KeyboardEvent) => {
     if (e.keyCode == Key.Enter && e.metaKey) {
@@ -297,7 +295,7 @@ const EditProjectDialog = () => {
   const handlePriorityChange = (_: any, priority: Priority | null) => {
     if (priority) {
       dispatch(
-        patchProject({ id: taskId, fields: { priority: priority.value } })
+        patchProject({ id: projectId, fields: { priority: priority.value } })
       );
     }
   };
@@ -307,8 +305,8 @@ const EditProjectDialog = () => {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure? Deleting a task cannot be undone.")) {
-      dispatch(deleteProject(task.id));
+    if (window.confirm("Are you sure? Deleting a project cannot be undone.")) {
+      dispatch(deleteProject(project.id));
       handleClose();
     }
   };
@@ -324,7 +322,7 @@ const EditProjectDialog = () => {
   const handleLabelsChange = (newLabels: Label[]) => {
     dispatch(
       patchProject({
-        id: taskId,
+        id: projectId,
         fields: { labels: newLabels.map((label) => label.id) },
       })
     );
@@ -340,7 +338,7 @@ const EditProjectDialog = () => {
 
     setDueDate(dateString);
     // eslint-disable-next-line @typescript-eslint/camelcase
-    dispatch(patchProject({ id: taskId, fields: { due_date: dateString } }));
+    dispatch(patchProject({ id: projectId, fields: { due_date: dateString } }));
   };
 
   return (
@@ -359,7 +357,7 @@ const EditProjectDialog = () => {
       <Content theme={theme}>
         <Close onClose={handleClose} />
         <Main>
-          <Header>id: {task.id}</Header>
+          <Header>id: {project.id}</Header>
           <Title>
             <FontAwesomeIcon icon={faCube} />
             <TextareaAutosize
@@ -368,7 +366,7 @@ const EditProjectDialog = () => {
               onChange={handleTitleChange}
               onBlur={handleSaveTitle}
               onKeyDown={handleTitleKeyDown}
-              data-testid="task-title"
+              data-testid="project-title"
             />
           </Title>
           <DescriptionHeader>
@@ -376,8 +374,8 @@ const EditProjectDialog = () => {
             <h3>Description</h3>
           </DescriptionHeader>
           <Description
-            key={`${taskId}${editingDescription}`}
-            data-testid="task-description"
+            key={`${projectId}${editingDescription}`}
+            data-testid="project-description"
           >
             <EditorWrapper
               onClick={editingDescription ? undefined : handleDescriptionClick}
@@ -437,7 +435,7 @@ const EditProjectDialog = () => {
             autoHighlight
             options={PRIORITY_OPTIONS}
             getOptionLabel={(option) => option.label}
-            value={PRIORITY_MAP[task.priority]}
+            value={PRIORITY_MAP[project.priority]}
             onChange={handlePriorityChange}
             renderInput={(params) => (
               <TextField {...params} label="Priority" variant="outlined" />
@@ -464,7 +462,7 @@ const EditProjectDialog = () => {
             options={labels}
             getOptionLabel={(option) => option.name}
             value={
-              tasksById[taskId].labels.map(
+              projectsById[projectId].labels.map(
                 (labelId) => labelsById[labelId]
               ) as Label[]
             }
@@ -517,12 +515,12 @@ const EditProjectDialog = () => {
                 color: ${TASK_G};
               `}
             >
-              Lock task
+              Lock project
             </Button>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faTrash} />}
               onClick={handleDelete}
-              data-testid="delete-task"
+              data-testid="delete-project"
               size="small"
               css={css`
                 font-size: 12px;
@@ -531,18 +529,18 @@ const EditProjectDialog = () => {
                 margin-bottom: 2rem;
               `}
             >
-              Delete task
+              Delete project
             </Button>
           </ButtonsContainer>
           <Text>
-            Updated {formatDistanceToNow(new Date(task.modified))} ago
+            Updated {formatDistanceToNow(new Date(project.modified))} ago
           </Text>
           <Text
             css={css`
               margin-bottom: 1rem;
             `}
           >
-            Created {formatDistanceToNow(new Date(task.created))} ago
+            Created {formatDistanceToNow(new Date(project.created))} ago
           </Text>
         </Side>
       </Content>

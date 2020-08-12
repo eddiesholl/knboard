@@ -89,6 +89,9 @@ export const slice = createSlice({
       state.byId[action.payload.id] = action.payload;
       state.createDialogOpen = false;
     });
+    builder.addCase(patchProject.fulfilled, (state, action) => {
+      state.byId[action.payload.id] = action.payload;
+    });
   },
 });
 
