@@ -33,7 +33,7 @@ interface PatchFields {
 export const patchProject = createAsyncThunk<
   IProject,
   { id: Id; fields: Partial<PatchFields> }
->("project/patchTaskStatus", async ({ id, fields }) => {
+>("project/patchProjectStatus", async ({ id, fields }) => {
   const response = await api.patch(`${API_PROJECTS}${id}/`, fields);
   return response.data;
 });
@@ -45,7 +45,7 @@ export const createProject = createAsyncThunk<
     rejectValue: string;
   }
 >(
-  "project/createTaskStatus",
+  "project/createProjectStatus",
   async (project, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post(`${API_PROJECTS}`, project);
@@ -58,10 +58,10 @@ export const createProject = createAsyncThunk<
 );
 
 export const deleteProject = createAsyncThunk<Id, Id>(
-  "project/deleteTaskStatus",
+  "project/deleteProjectStatus",
   async (id, { dispatch }) => {
     await api.delete(`${API_PROJECTS}${id}/`);
-    dispatch(createInfoToast("Task deleted"));
+    dispatch(createInfoToast("Project deleted"));
     return id;
   }
 );
