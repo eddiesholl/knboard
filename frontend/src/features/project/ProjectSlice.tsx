@@ -85,6 +85,10 @@ export const slice = createSlice({
       }
       state.byId = byId;
     });
+    builder.addCase(createProject.fulfilled, (state, action) => {
+      state.byId[action.payload.id] = action.payload;
+      state.createDialogOpen = false;
+    });
   },
 });
 
