@@ -57,6 +57,19 @@ export interface ITask {
   parent_task: Id | null;
 }
 
+export interface IProject {
+  id: Id;
+  created: string;
+  modified: string;
+  title: string;
+  description: string;
+  labels: Id[];
+  priority: PriorityValue;
+  due_date: string | null;
+}
+
+export type NewProject = Omit<IProject, "id" | "created" | "modified">;
+
 export interface NewTask extends Omit<ITask, "id" | "created" | "modified"> {
   column: Id;
 }

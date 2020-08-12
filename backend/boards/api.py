@@ -10,11 +10,12 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from .models import Board, Task, Column, Label
+from .models import Board, Task, Column, Label, Project
 from .permissions import IsOwner, IsOwnerForDangerousMethods
 from .serializers import (
     BoardSerializer,
     TaskSerializer,
+    ProjectSerializer,
     ColumnSerializer,
     BoardDetailSerializer,
     MemberSerializer,
@@ -104,6 +105,14 @@ class TaskViewSet(ModelDetailViewSet):
         user = self.request.user
         return super().get_queryset().filter(column__board__members=user)
 
+class ProjectViewSet(ModelDetailViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return super().get_queryset().filter(board__members=user)
 
 class ColumnViewSet(ModelDetailViewSet):
     queryset = Column.objects.all()

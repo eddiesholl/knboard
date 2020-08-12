@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from accounts.serializers import BoardMemberSerializer
-from .models import Board, Task, Column, Label
+from .models import Board, Task, Column, Label, Project
 
 User = get_user_model()
 
@@ -83,6 +83,50 @@ class TaskSerializer(serializers.ModelSerializer):
             "parent_task"
         ]
 
+class ProjectSerializer(serializers.ModelSerializer):
+    labels = serializers.PrimaryKeyRelatedField(
+        queryset=Label.objects.all(), many=True, required=False
+    )
+
+    def extra_validation(self, board=None, labels=None, user=None):
+        if labels and board:
+            for label in labels:
+                if label.board != board:
+                    raise serializers.ValidationError(
+                        "Can't set a label that doesn't belong to the board!"
+                    )
+        if user and user not in board.members.all():
+            raise serializers.ValidationError("Must be a member of the board!")
+
+    def update(self, instance, validated_data):
+        labels = validated_data.get("labels")
+        board = validated_data.get("board")
+        self.extra_validation(board=board, labels=labels)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        board = validated_data["board"]
+        labels = validated_data["labels"]
+        self.extra_validation(
+            board=board, labels=labels, user=user
+        )
+        return super().create(validated_data)
+
+    class Meta:
+        model = Project
+        fields = [
+            "id",
+            "created",
+            "modified",
+            "title",
+            "description",
+            "board",
+            "priority",
+            "labels",
+            "project_order",
+            "due_date",
+        ]
 
 class ColumnSerializer(BoardModelSerializer):
     board = serializers.PrimaryKeyRelatedField(queryset=Board.objects.all())
@@ -112,10 +156,11 @@ class BoardDetailSerializer(serializers.ModelSerializer):
     columns = ColumnSerializer(many=True, read_only=True)
     members = BoardMemberSerializer(many=True, read_only=True)
     labels = LabelSerializer(many=True, read_only=True)
+    projects = ProjectSerializer(many=True, read_only=True)
 
     class Meta:
         model = Board
-        fields = ["id", "name", "owner", "members", "columns", "labels"]
+        fields = ["id", "name", "owner", "members", "columns", "labels", "projects"]
 
 
 class MemberSerializer(serializers.Serializer):
