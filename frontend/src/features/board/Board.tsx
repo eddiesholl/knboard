@@ -19,6 +19,7 @@ import { fetchBoardById } from "./BoardSlice";
 import Spinner from "components/Spinner";
 import { barHeight, sidebarWidth } from "const";
 import PageError from "components/PageError";
+import ProjectColumn from "features/project/ProjectColumn";
 
 const BoardContainer = styled.div`
   min-width: calc(100vw - ${sidebarWidth});
@@ -59,6 +60,7 @@ const Board = () => {
   const columns = useSelector(columnSelectors.selectAll);
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const tasksById = useSelector((state: RootState) => state.task.byId);
+  const projects = useSelector((state: RootState) => state.project.byId);
   const dispatch = useDispatch();
   const { id } = useParams();
 
@@ -128,6 +130,7 @@ const Board = () => {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
+                <ProjectColumn projects={Object.values(projects)} />
                 {columns.map((column: IColumn, index: number) => (
                   <Column
                     key={column.id}
