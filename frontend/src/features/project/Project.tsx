@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { IProject, BoardMember } from "types";
+import { IProject } from "types";
 import {
   DraggableProvided,
   Draggable,
@@ -9,16 +9,10 @@ import {
 import { N30, N0, N70, PRIMARY } from "utils/colors";
 import { PRIO_COLORS } from "const";
 import { taskContainerStyles } from "styles";
-import { AvatarGroup } from "@material-ui/lab";
-import { css } from "@emotion/core";
-import { useSelector, useDispatch } from "react-redux";
-import { Avatar } from "@material-ui/core";
+import { useDispatch } from "react-redux";
 import { setEditDialogOpen } from "./ProjectSlice";
-import TaskLabels from "../task/TaskLabels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
-import { selectMembersEntities } from "features/member/MemberSlice";
-import TaskDueDate from "../task/TaskDueDate";
 
 const getBackgroundColor = (isDragging: boolean, isGroupedOver: boolean) => {
   if (isDragging) {
@@ -91,8 +85,6 @@ const TaskId = styled.small`
   color: #aaa;
   font-size: 8px;
 `;
-
-const Assignees = styled.div``;
 
 const getStyle = (provided: DraggableProvided, style?: Record<string, any>) => {
   if (!style) {

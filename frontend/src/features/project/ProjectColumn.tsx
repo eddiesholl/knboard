@@ -2,13 +2,12 @@ import React from "react";
 import styled from "@emotion/styled";
 import { grid } from "const";
 import { COLUMN_COLOR, PRIMARY } from "utils/colors";
-import { ITask, IProject } from "types";
+import { IProject } from "types";
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
 } from "react-beautiful-dnd";
-import TaskList from "features/task/TaskList";
 import ColumnTitle from "components/ColumnTitle";
 import ProjectList from "./ProjectList";
 

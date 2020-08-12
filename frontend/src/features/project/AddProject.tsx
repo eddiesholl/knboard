@@ -9,11 +9,7 @@ import { css } from "@emotion/core";
 import { useDispatch } from "react-redux";
 import { setCreateDialogOpen } from "./ProjectSlice";
 
-interface Props {
-  columnId: Id;
-}
-
-const AddProject = ({ columnId }: Props) => {
+const AddProject = () => {
   const dispatch = useDispatch();
 
   const handleOnClick = () => {
@@ -42,7 +38,7 @@ const AddProject = ({ columnId }: Props) => {
       onClick={handleOnClick}
       fullWidth
     >
-      Add another card
+      Add another project
     </Button>
   );
 };

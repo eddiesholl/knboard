@@ -75,11 +75,10 @@ const InnerProjectList = ({ projects }: ProjectListProps) => (
 
 interface InnerListProps {
   dropProvided: DroppableProvided;
-  columnId: number;
   projects: IProject[];
 }
 
-const InnerList = ({ columnId, projects, dropProvided }: InnerListProps) => (
+const InnerList = ({ projects, dropProvided }: InnerListProps) => (
   <Container>
     <DropZone
       data-testid="drop-zone"
@@ -92,12 +91,12 @@ const InnerList = ({ columnId, projects, dropProvided }: InnerListProps) => (
       <InnerProjectList projects={projects} />
       {dropProvided.placeholder}
     </DropZone>
-    <AddProject columnId={columnId} />
+    <AddProject />
   </Container>
 );
 
-const ProjectList = ({ columnId, listType, projects: projects }: Props) => (
-  <Droppable droppableId={columnId.toString()} type={listType}>
+const ProjectList = ({ listType, projects: projects }: Props) => (
+  <Droppable droppableId={"projects"} type={listType}>
     {(
       dropProvided: DroppableProvided,
       dropSnapshot: DroppableStateSnapshot
@@ -107,11 +106,7 @@ const ProjectList = ({ columnId, listType, projects: projects }: Props) => (
         isDraggingFrom={Boolean(dropSnapshot.draggingFromThisWith)}
         {...dropProvided.droppableProps}
       >
-        <InnerList
-          columnId={columnId}
-          projects={projects}
-          dropProvided={dropProvided}
-        />
+        <InnerList projects={projects} dropProvided={dropProvided} />
       </Wrapper>
     )}
   </Droppable>

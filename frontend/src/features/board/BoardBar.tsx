@@ -12,6 +12,8 @@ import MemberDialog from "features/member/MemberDialog";
 import { currentBoardOwner } from "./BoardSlice";
 import CreateTaskDialog from "features/task/CreateTaskDialog";
 import EditTaskDialog from "features/task/EditTaskDialog";
+import CreateProjectDialog from "features/project/CreateProjectDialog";
+import EditProjectDialog from "features/project/EditProjectDialog";
 import { Button } from "@material-ui/core";
 import { PRIMARY } from "utils/colors";
 import { addColumn } from "features/column/ColumnSlice";
@@ -149,6 +151,8 @@ const BoardBar = () => {
       <MemberListDialog />
       <EditTaskDialog />
       <CreateTaskDialog />
+      <EditProjectDialog />
+      <CreateProjectDialog />
       <LabelDialog />
     </Container>
   );
