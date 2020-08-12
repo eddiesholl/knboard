@@ -92,6 +92,9 @@ export const slice = createSlice({
     builder.addCase(patchProject.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
     });
+    builder.addCase(deleteProject.fulfilled, (state, action) => {
+      delete state.byId[action.payload];
+    });
   },
 });
 
