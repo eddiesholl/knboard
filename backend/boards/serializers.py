@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from accounts.serializers import BoardMemberSerializer
-from .models import Board, Task, Column, Label
+from .models import Board, Task, Column, Label, Project
 
 User = get_user_model()
 
@@ -106,7 +106,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        board = validated_data["column"].board
+        board = validated_data["board"]
         labels = validated_data["labels"]
         self.extra_validation(
             board=board, labels=labels, user=user
@@ -114,7 +114,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     class Meta:
-        model = Task
+        model = Project
         fields = [
             "id",
             "created",
