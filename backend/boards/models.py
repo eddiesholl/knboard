@@ -60,6 +60,22 @@ class Priority(models.TextChoices):
     MEDIUM = "M", "Medium"
     LOW = "L", "Low"
 
+class Project(SortableMixin, TimeStampedModel):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    board = models.ForeignKey("Board", related_name="projects", on_delete=models.CASCADE)
+    priority = models.CharField(
+        max_length=1, choices=Priority.choices, default=Priority.MEDIUM
+    )
+    labels = models.ManyToManyField(Label, related_name="projects")
+    project_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
+    due_date = models.DateField(null=True)
+
+    def __str__(self):
+        return f"{self.id} - {self.title}"
+
+    class Meta:
+        ordering = ["project_order"]
 
 class Task(SortableMixin, TimeStampedModel):
     title = models.CharField(max_length=255)
@@ -70,6 +86,7 @@ class Task(SortableMixin, TimeStampedModel):
     labels = models.ManyToManyField(Label, related_name="tasks")
     assignees = models.ManyToManyField(User, related_name="tasks")
     column = SortableForeignKey(Column, related_name="tasks", on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name="tasks", null=True, on_delete=models.CASCADE)
     task_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
     due_date = models.DateField(null=True)
     parent_task = models.ForeignKey('self', related_name="child_tasks", null=True, on_delete=models.SET_NULL)
