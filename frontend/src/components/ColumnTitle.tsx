@@ -82,10 +82,17 @@ const OptionsContent = styled.div`
 interface Props {
   id: Id;
   title: string;
-  tasksCount: number;
+  totalCount: number;
+  filteredCount?: number;
 }
 
-const ColumnTitle = ({ id, title, tasksCount, ...props }: Props) => {
+const ColumnTitle = ({
+  id,
+  title,
+  totalCount,
+  filteredCount,
+  ...props
+}: Props) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -176,7 +183,11 @@ const ColumnTitle = ({ id, title, tasksCount, ...props }: Props) => {
       )}
       <Extra>
         <InnerExtra>
-          <Count>{tasksCount}</Count>
+          {!filteredCount || totalCount == filteredCount ? (
+            <Count>{totalCount}</Count>
+          ) : (
+            <Count>{`${filteredCount}/${totalCount}`}</Count>
+          )}
           <Button
             onClick={handleOptionsClick}
             data-testid="col-options"

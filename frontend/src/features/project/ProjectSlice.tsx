@@ -10,12 +10,14 @@ interface InitialState {
   byId: ProjectsById;
   createDialogOpen: boolean;
   editDialogOpen: Id | null;
+  selectedProject: Id | null;
 }
 
 export const initialState: InitialState = {
   byId: {},
   createDialogOpen: false,
   editDialogOpen: null,
+  selectedProject: null,
 };
 
 interface CreateProjectResponse extends IProject {
@@ -73,6 +75,15 @@ export const slice = createSlice({
     setEditDialogOpen: (state, action: PayloadAction<Id | null>) => {
       state.editDialogOpen = action.payload;
     },
+    changeProjectSelection: (state, action: PayloadAction<Id | null>) => {
+      const newProjectSelection = action.payload;
+      if (newProjectSelection == state.selectedProject) {
+        state.editDialogOpen = newProjectSelection;
+      } else {
+        state.editDialogOpen = null;
+      }
+      state.selectedProject = newProjectSelection;
+    },
     setCreateDialogOpen: (state, action: PayloadAction<boolean>) => {
       state.createDialogOpen = action.payload;
     },
@@ -98,6 +109,10 @@ export const slice = createSlice({
   },
 });
 
-export const { setEditDialogOpen, setCreateDialogOpen } = slice.actions;
+export const {
+  changeProjectSelection,
+  setEditDialogOpen,
+  setCreateDialogOpen,
+} = slice.actions;
 
 export default slice.reducer;

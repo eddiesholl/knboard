@@ -10,6 +10,8 @@ import {
 } from "react-beautiful-dnd";
 import TaskList from "features/task/TaskList";
 import ColumnTitle from "components/ColumnTitle";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const Container = styled.div`
   margin: ${grid / 2}px;
@@ -37,6 +39,12 @@ type Props = {
 };
 
 const Column = ({ id, title, tasks, index }: Props) => {
+  const selectedProject = useSelector(
+    (state: RootState) => state.project.selectedProject
+  );
+  const filteredTasks = tasks.filter(
+    (task) => selectedProject == null || selectedProject == task.project
+  );
   return (
     <Draggable draggableId={`col-${id}`} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
@@ -50,12 +58,13 @@ const Column = ({ id, title, tasks, index }: Props) => {
               {...provided.dragHandleProps}
               id={id}
               title={title}
-              tasksCount={tasks.length}
+              totalCount={tasks.length}
+              filteredCount={filteredTasks.length}
               aria-label={`${title} task list`}
               data-testid="column-title"
             />
           </Header>
-          <TaskList columnId={id} listType="TASK" tasks={tasks} />
+          <TaskList columnId={id} listType="TASK" tasks={filteredTasks} />
         </Container>
       )}
     </Draggable>

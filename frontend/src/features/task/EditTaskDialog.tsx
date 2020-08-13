@@ -63,6 +63,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import { getSaveShortcutLabel } from "utils/shortcuts";
 import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
+import ProjectChooser from "features/project/ProjectChooser";
 
 const mdParser = new MarkdownIt({ breaks: true });
 
@@ -180,7 +181,6 @@ const EditTaskDialog = () => {
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const taskId = useSelector((state: RootState) => state.task.editDialogOpen);
   const tasksById = useSelector((state: RootState) => state.task.byId);
-  const projectsById = useSelector((state: RootState) => state.project.byId);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
@@ -546,26 +546,9 @@ const EditTaskDialog = () => {
             `}
           />
 
-          <Autocomplete
-            id="parent-select"
-            data-testid="edit-parent"
-            size="small"
-            filterSelectedOptions
-            autoHighlight
-            openOnFocus
-            blurOnSelect
-            options={Object.values(projectsById)
-              .sort((a, b) => a.title.localeCompare(b.title))
-              .map((p) => p.id)}
-            getOptionLabel={(option) => projectsById[option].title}
-            value={selectedProject}
-            onChange={(_: any, newParent: Id | null) =>
-              handleProjectChange(newParent)
-            }
-            renderInput={(params) => (
-              <TextField {...params} label="Project" variant="outlined" />
-            )}
-            renderOption={(option) => projectsById[option].title}
+          <ProjectChooser
+            handleProjectChange={handleProjectChange}
+            selectedProject={selectedProject}
             css={css`
               width: 100%;
               margin-top: 1rem;

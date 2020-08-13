@@ -27,6 +27,7 @@ import {
   setMemberListOpen,
 } from "features/member/MemberSlice";
 import MemberListDialog from "features/member/MemberList";
+import BoardFilter from "./BoardFilter";
 
 const Container = styled.div`
   height: ${barHeight}px;
@@ -42,7 +43,6 @@ const Items = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  overflow-x: scroll;
 `;
 
 const Left = styled.div`
@@ -121,6 +121,7 @@ const BoardBar = () => {
           </AvatarGroup>
           {boardOwner && <MemberInvite boardId={detail.id} />}
         </Left>
+        <BoardFilter />
         <Right>
           <Button
             size="small"
