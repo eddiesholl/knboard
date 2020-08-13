@@ -146,7 +146,7 @@ const CreateTaskDialog = () => {
     }
   };
 
-  const handlePChange = (newParent: Id | null) => {
+  const handleProjectChange = (newParent: Id | null) => {
     setProject(newParent);
   };
 
@@ -289,7 +289,9 @@ const CreateTaskDialog = () => {
             .map((p) => p.id)}
           getOptionLabel={(option) => projectsById[option].title}
           value={project}
-          onChange={(_: any, newParent: Id | null) => handlePChange(newParent)}
+          onChange={(_: any, newParent: Id | null) =>
+            handleProjectChange(newParent)
+          }
           renderInput={(params) => (
             <TextField {...params} label="Project" variant="outlined" />
           )}
