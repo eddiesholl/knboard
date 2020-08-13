@@ -187,7 +187,6 @@ const Task = ({ task: task, style, index }: Props) => {
         >
           <Content>
             <TextContent>{task.title}</TextContent>
-            <TaskId>id: {task.id}</TaskId>
             <TaskDueDate task={task} />
             <TaskLabels task={task} />
             <TaskFooter task={task} />

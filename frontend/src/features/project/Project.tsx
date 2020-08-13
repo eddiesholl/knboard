@@ -163,7 +163,6 @@ const Project = ({ project: project, style, index }: Props) => {
         >
           <Content>
             <TextContent>{project.title}</TextContent>
-            <TaskId>id: {project.id}</TaskId>
             {/* <TaskDueDate dueDate={project} />
             <TaskLabels project={project} /> */}
             <TaskFooter project={project} />
