@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { grid } from "const";
+import { grid, PROJECT_NO_PROJECT_ID } from "const";
 import { COLUMN_COLOR, PRIMARY } from "utils/colors";
 import { ITask } from "types";
 import {
@@ -43,7 +43,10 @@ const Column = ({ id, title, tasks, index }: Props) => {
     (state: RootState) => state.project.selectedProject
   );
   const filteredTasks = tasks.filter(
-    (task) => selectedProject == null || selectedProject == task.project
+    (task) =>
+      selectedProject == null ||
+      (selectedProject == PROJECT_NO_PROJECT_ID && task.project == null) ||
+      selectedProject == task.project
   );
   return (
     <Draggable draggableId={`col-${id}`} index={index}>
