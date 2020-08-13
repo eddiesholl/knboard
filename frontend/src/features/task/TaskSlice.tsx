@@ -42,6 +42,7 @@ interface PatchFields {
   labels: Id[];
   assignees: Id[];
   due_date: string | null;
+  project: Id | null;
   parent_task: Id | null;
 }
 

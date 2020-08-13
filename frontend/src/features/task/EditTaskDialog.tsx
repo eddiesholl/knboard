@@ -180,12 +180,12 @@ const EditTaskDialog = () => {
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const taskId = useSelector((state: RootState) => state.task.editDialogOpen);
   const tasksById = useSelector((state: RootState) => state.task.byId);
-  const tasksByParent = useSelector((state: RootState) => state.task.byParent);
+  const projectsById = useSelector((state: RootState) => state.project.byId);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState(false);
   const [dueDate, setDueDate] = useState<string | null>(null);
-  const [parentTask, setParentTask] = useState<Id | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Id | null>(null);
   const titleTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<MdEditor>(null);
@@ -198,7 +198,7 @@ const EditTaskDialog = () => {
       setDescription(tasksById[taskId].description);
       setTitle(tasksById[taskId].title);
       setDueDate(tasksById[taskId].due_date);
-      setParentTask(tasksById[taskId].parent_task);
+      setSelectedProject(tasksById[taskId].project);
     }
   }, [open, taskId]);
 
@@ -358,13 +358,12 @@ const EditTaskDialog = () => {
     );
   };
 
-  const handleParentChange = (newParent: Id | null) => {
-    setParentTask(newParent);
+  const handleProjectChange = (newProject: Id | null) => {
+    setSelectedProject(newProject);
     dispatch(
       patchTask({
         id: taskId,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        fields: { parent_task: newParent },
+        fields: { project: newProject },
       })
     );
   };
@@ -555,45 +554,18 @@ const EditTaskDialog = () => {
             autoHighlight
             openOnFocus
             blurOnSelect
-            options={Object.values(tasksById)
-              .sort((a, b) => {
-                const stringCompareResult = a.title.localeCompare(b.title);
-                const aIsParent = Object.keys(tasksByParent).includes(
-                  a.id.toString()
-                );
-                const bIsParent = Object.keys(tasksByParent).includes(
-                  b.id.toString()
-                );
-
-                if (aIsParent) {
-                  if (bIsParent) {
-                    return stringCompareResult;
-                  } else {
-                    return -1;
-                  }
-                } else {
-                  if (bIsParent) {
-                    return 1;
-                  } else {
-                    return stringCompareResult;
-                  }
-                }
-              })
-              .map((t) => t.id)}
-            getOptionLabel={(option) => tasksById[option].title}
-            value={parentTask}
-            groupBy={(option) =>
-              Object.keys(tasksByParent).includes(option.toString())
-                ? "Projects"
-                : "Tasks"
-            }
+            options={Object.values(projectsById)
+              .sort((a, b) => a.title.localeCompare(b.title))
+              .map((p) => p.id)}
+            getOptionLabel={(option) => projectsById[option].title}
+            value={selectedProject}
             onChange={(_: any, newParent: Id | null) =>
-              handleParentChange(newParent)
+              handleProjectChange(newParent)
             }
             renderInput={(params) => (
               <TextField {...params} label="Project" variant="outlined" />
             )}
-            renderOption={(option) => tasksById[option].title}
+            renderOption={(option) => projectsById[option].title}
             css={css`
               width: 100%;
               margin-top: 1rem;

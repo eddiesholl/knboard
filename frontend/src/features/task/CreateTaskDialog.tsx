@@ -83,8 +83,7 @@ const CreateTaskDialog = () => {
   const createLoading = useSelector(
     (state: RootState) => state.task.createLoading
   );
-  const tasksById = useSelector((state: RootState) => state.task.byId);
-  const tasksByParent = useSelector((state: RootState) => state.task.byParent);
+  const projectsById = useSelector((state: RootState) => state.project.byId);
   const [titleTouched, setTitleTouched] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -95,7 +94,7 @@ const CreateTaskDialog = () => {
     label: "Medium",
   });
   const [labels, setLabels] = useState<Label[]>([]);
-  const [parentTask, setParentTask] = useState<Id | null>(null);
+  const [project, setProject] = useState<Id | null>(null);
   const xsDown = useMediaQuery(theme.breakpoints.down("xs"));
 
   const handleEditorChange = ({ text }: any) => {
@@ -131,10 +130,11 @@ const CreateTaskDialog = () => {
         labels: labels.map((l) => l.id),
         assignees: assignees.map((a) => a.id),
         priority: priority.value,
+        project: project,
         // eslint-disable-next-line @typescript-eslint/camelcase
         due_date: dueDate,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        parent_task: parentTask,
+        parent_task: null,
       };
       dispatch(createTask(newTask));
     }
@@ -146,8 +146,8 @@ const CreateTaskDialog = () => {
     }
   };
 
-  const handleParentChange = (newParent: Id | null) => {
-    setParentTask(newParent);
+  const handlePChange = (newParent: Id | null) => {
+    setProject(newParent);
   };
 
   const handleDateChange = (date: MaterialUiPickersDate) => {
@@ -284,45 +284,16 @@ const CreateTaskDialog = () => {
           autoHighlight
           openOnFocus
           blurOnSelect
-          options={Object.values(tasksById)
-            .sort((a, b) => {
-              const stringCompareResult = a.title.localeCompare(b.title);
-              const aIsParent = Object.keys(tasksByParent).includes(
-                a.id.toString()
-              );
-              const bIsParent = Object.keys(tasksByParent).includes(
-                b.id.toString()
-              );
-
-              if (aIsParent) {
-                if (bIsParent) {
-                  return stringCompareResult;
-                } else {
-                  return -1;
-                }
-              } else {
-                if (bIsParent) {
-                  return 1;
-                } else {
-                  return stringCompareResult;
-                }
-              }
-            })
-            .map((t) => t.id)}
-          getOptionLabel={(option) => tasksById[option].title}
-          value={parentTask}
-          groupBy={(option) =>
-            Object.keys(tasksByParent).includes(option.toString())
-              ? "Projects"
-              : "Tasks"
-          }
-          onChange={(_: any, newParent: Id | null) =>
-            handleParentChange(newParent)
-          }
+          options={Object.values(projectsById)
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((p) => p.id)}
+          getOptionLabel={(option) => projectsById[option].title}
+          value={project}
+          onChange={(_: any, newParent: Id | null) => handlePChange(newParent)}
           renderInput={(params) => (
             <TextField {...params} label="Project" variant="outlined" />
           )}
-          renderOption={(option) => tasksById[option].title}
+          renderOption={(option) => projectsById[option].title}
           css={css`
             width: 100%;
             margin-top: 1rem;
