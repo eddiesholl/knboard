@@ -42,6 +42,7 @@ import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
 import { format } from "date-fns";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import ProjectChooser from "features/project/ProjectChooser";
 
 const mdParser = new MarkdownIt();
 
@@ -83,7 +84,6 @@ const CreateTaskDialog = () => {
   const createLoading = useSelector(
     (state: RootState) => state.task.createLoading
   );
-  const projectsById = useSelector((state: RootState) => state.project.byId);
   const [titleTouched, setTitleTouched] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -276,26 +276,9 @@ const CreateTaskDialog = () => {
           `}
         />
 
-        <Autocomplete
-          id="parent-select"
-          data-testid="edit-parent"
-          size="small"
-          filterSelectedOptions
-          autoHighlight
-          openOnFocus
-          blurOnSelect
-          options={Object.values(projectsById)
-            .sort((a, b) => a.title.localeCompare(b.title))
-            .map((p) => p.id)}
-          getOptionLabel={(option) => projectsById[option].title}
-          value={project}
-          onChange={(_: any, newParent: Id | null) =>
-            handleProjectChange(newParent)
-          }
-          renderInput={(params) => (
-            <TextField {...params} label="Project" variant="outlined" />
-          )}
-          renderOption={(option) => projectsById[option].title}
+        <ProjectChooser
+          handleProjectChange={handleProjectChange}
+          selectedProject={project}
           css={css`
             width: 100%;
             margin-top: 1rem;
