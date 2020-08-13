@@ -54,6 +54,7 @@ export interface ITask {
   assignees: Id[];
   priority: PriorityValue;
   due_date: string | null;
+  project: Id | null;
   parent_task: Id | null;
 }
 
