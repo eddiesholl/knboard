@@ -5,6 +5,7 @@ import { grey } from "@material-ui/core/colors";
 
 export const TOAST_AUTO_HIDE_DURATION = 4000;
 export const LOCAL_STORAGE_KEY = "knboard-data";
+export const DROPPABLE_PROJECT_ID = "droppable-project-id";
 
 export const grid = 8;
 export const borderRadius = 4;

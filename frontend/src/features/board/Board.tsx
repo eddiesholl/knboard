@@ -17,7 +17,7 @@ import { updateColumns, columnSelectors } from "features/column/ColumnSlice";
 import { useParams } from "react-router-dom";
 import { fetchBoardById } from "./BoardSlice";
 import Spinner from "components/Spinner";
-import { barHeight, sidebarWidth } from "const";
+import { barHeight, sidebarWidth, DROPPABLE_PROJECT_ID } from "const";
 import PageError from "components/PageError";
 import ProjectColumn from "features/project/ProjectColumn";
 
@@ -95,6 +95,10 @@ const Board = () => {
         destination.index
       );
       dispatch(updateColumns(newOrdered));
+      return;
+    }
+
+    if (source.droppableId == DROPPABLE_PROJECT_ID) {
       return;
     }
 

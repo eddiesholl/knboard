@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { R50, T50, COLUMN_COLOR } from "utils/colors";
-import { grid, barHeight, taskWidth } from "const";
+import { grid, barHeight, taskWidth, DROPPABLE_PROJECT_ID } from "const";
 import { IProject } from "types";
 import {
   DroppableProvided,
@@ -96,7 +96,7 @@ const InnerList = ({ projects, dropProvided }: InnerListProps) => (
 );
 
 const ProjectList = ({ listType, projects: projects }: Props) => (
-  <Droppable droppableId={"projects"} type={listType}>
+  <Droppable droppableId={DROPPABLE_PROJECT_ID} type={listType}>
     {(
       dropProvided: DroppableProvided,
       dropSnapshot: DroppableStateSnapshot

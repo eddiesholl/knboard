@@ -56,7 +56,7 @@ const ProjectColumn = ({ projects }: Props) => {
               data-testid="column-title"
             />
           </Header>
-          <ProjectList columnId={id} listType="TASK" projects={projects} />
+          <ProjectList columnId={id} listType="PROJECT" projects={projects} />
         </Container>
       )}
     </Draggable>
