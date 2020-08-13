@@ -3,6 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchBoardById } from "features/board/BoardSlice";
 import api, { API_PROJECTS } from "api";
 import { createSuccessToast, createInfoToast } from "features/toast/ToastSlice";
+import { PROJECT_NO_PROJECT_ID } from "const";
 
 type ProjectsById = Record<string, IProject>;
 
@@ -13,8 +14,22 @@ interface InitialState {
   selectedProject: Id | null;
 }
 
+const noProject: IProject = {
+  id: PROJECT_NO_PROJECT_ID,
+  created: "",
+  modified: "",
+  title: "Tasks with no project",
+  description: "",
+  labels: [],
+  priority: "M",
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  due_date: null,
+};
+
 export const initialState: InitialState = {
-  byId: {},
+  byId: {
+    [PROJECT_NO_PROJECT_ID]: noProject,
+  },
   createDialogOpen: false,
   editDialogOpen: null,
   selectedProject: null,
@@ -90,7 +105,9 @@ export const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchBoardById.fulfilled, (state, action) => {
-      const byId: ProjectsById = {};
+      const byId: ProjectsById = {
+        [PROJECT_NO_PROJECT_ID]: noProject,
+      };
       for (const p of action.payload.projects) {
         byId[p.id] = p;
       }
