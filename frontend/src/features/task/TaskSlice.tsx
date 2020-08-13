@@ -12,6 +12,20 @@ import { addColumn, deleteColumn } from "features/column/ColumnSlice";
 import { deleteLabel } from "features/label/LabelSlice";
 import { removeBoardMember } from "features/member/MemberSlice";
 
+const priorityToSortValue = (p: PriorityValue) =>
+  p == "H" ? 3 : p == "M" ? 2 : 1;
+
+const sortTasks = (ta: ITask, tb: ITask) => {
+  const va = priorityToSortValue(ta.priority);
+  const vb = priorityToSortValue(tb.priority);
+
+  return vb - va;
+};
+
+const sortTasksInColumn = (tasksToSort: ITask[]) => {
+  return tasksToSort.sort(sortTasks).map((task) => task.id);
+};
+
 type TasksById = Record<string, ITask>;
 type TasksByParent = Record<string, Id[]>;
 
@@ -141,7 +155,14 @@ export const slice = createSlice({
     });
     builder.addCase(createTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
-      state.byColumn[action.payload.column].push(action.payload.id);
+
+      const existingTaskIdsForColumn = state.byColumn[action.payload.column];
+      const taskIdsWithNewTask = existingTaskIdsForColumn.concat(
+        action.payload.id
+      );
+      state.byColumn[action.payload.column] = sortTasksInColumn(
+        taskIdsWithNewTask.map((taskId) => state.byId[taskId])
+      );
       state.byParent = buildTasksByParent(state.byId);
       state.createDialogOpen = false;
       state.createLoading = false;
@@ -194,16 +215,6 @@ export const {
   setEditDialogOpen,
 } = slice.actions;
 
-const priorityToSortValue = (p: PriorityValue) =>
-  p == "H" ? 3 : p == "M" ? 2 : 1;
-
-const sortTasks = (ta: ITask, tb: ITask) => {
-  const va = priorityToSortValue(ta.priority);
-  const vb = priorityToSortValue(tb.priority);
-
-  return vb - va;
-};
-
 export const updateTasksByColumn = (
   tasksByColumn: TasksByColumn
 ): AppThunk => async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -213,12 +224,11 @@ export const updateTasksByColumn = (
   const boardId = state.board.detail?.id;
 
   const sortedTasksByColumn: TasksByColumn = {};
-  Object.keys(tasksByColumn).forEach((k) => {
-    const sortedtaskIds = tasksByColumn[k]
-      .map((id) => tasksById[id])
-      .sort(sortTasks)
-      .map((task) => task.id);
-    sortedTasksByColumn[k] = sortedtaskIds;
+  Object.keys(sortedTasksByColumn).forEach((columnId) => {
+    const sortedtaskIds = sortTasksInColumn(
+      tasksByColumn[columnId].map((id) => tasksById[id])
+    );
+    sortedTasksByColumn[columnId] = sortedtaskIds;
   });
 
   try {
