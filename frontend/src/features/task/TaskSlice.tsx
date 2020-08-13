@@ -155,9 +155,7 @@ export const slice = createSlice({
     });
     builder.addCase(createTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
-
-      const existingTaskIdsForColumn = state.byColumn[action.payload.column];
-      const taskIdsWithNewTask = existingTaskIdsForColumn.concat(
+      const taskIdsWithNewTask = state.byColumn[action.payload.column].concat(
         action.payload.id
       );
       state.byColumn[action.payload.column] = sortTasksInColumn(
@@ -222,9 +220,8 @@ export const updateTasksByColumn = (
   const previousTasksByColumn = state.task.byColumn;
   const tasksById = state.task.byId;
   const boardId = state.board.detail?.id;
-
   const sortedTasksByColumn: TasksByColumn = {};
-  Object.keys(sortedTasksByColumn).forEach((columnId) => {
+  Object.keys(tasksByColumn).forEach((columnId) => {
     const sortedtaskIds = sortTasksInColumn(
       tasksByColumn[columnId].map((id) => tasksById[id])
     );
@@ -236,7 +233,7 @@ export const updateTasksByColumn = (
     await api.post(API_SORT_TASKS, {
       board: boardId,
       tasks: sortedTasksByColumn,
-      order: Object.values(tasksByColumn).flat(),
+      order: Object.values(sortedTasksByColumn).flat(),
     });
   } catch (err) {
     dispatch(setTasksByColumn(previousTasksByColumn));
