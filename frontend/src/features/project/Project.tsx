@@ -6,15 +6,23 @@ import {
   Draggable,
   DraggableStateSnapshot,
 } from "react-beautiful-dnd";
-import { N30, N0, N70, PRIMARY } from "utils/colors";
+import { N30, N0, N70, PRIMARY, Y50 } from "utils/colors";
 import { PRIO_COLORS } from "const";
 import { taskContainerStyles } from "styles";
-import { useDispatch } from "react-redux";
-import { setEditDialogOpen } from "./ProjectSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { changeProjectSelection } from "./ProjectSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
+import { RootState } from "store";
 
-const getBackgroundColor = (isDragging: boolean, isGroupedOver: boolean) => {
+const getBackgroundColor = (
+  isDragging: boolean,
+  isGroupedOver: boolean,
+  isSelected: boolean
+) => {
+  if (isSelected) {
+    return Y50;
+  }
   if (isDragging) {
     return "#eee";
   }
@@ -32,12 +40,17 @@ const getBorderColor = (isDragging: boolean) =>
 interface ContainerProps {
   isDragging: boolean;
   isGroupedOver: boolean;
+  isSelected: boolean;
 }
 
 const Container = styled.span<ContainerProps>`
   border-color: ${(props) => getBorderColor(props.isDragging)};
   background-color: ${(props) =>
-    getBackgroundColor(props.isDragging, props.isGroupedOver)};
+    getBackgroundColor(
+      props.isDragging,
+      props.isGroupedOver,
+      props.isSelected
+    )};
   box-shadow: ${({ isDragging }) =>
     isDragging ? `2px 2px 1px ${N70}` : "none"};
 
@@ -115,9 +128,12 @@ interface Props {
 
 const Project = ({ project: project, style, index }: Props) => {
   const dispatch = useDispatch();
+  const selectedProject = useSelector(
+    (state: RootState) => state.project.selectedProject
+  );
 
   const handleClick = () => {
-    dispatch(setEditDialogOpen(project.id));
+    dispatch(changeProjectSelection(project.id));
   };
 
   return (
@@ -133,6 +149,7 @@ const Project = ({ project: project, style, index }: Props) => {
         <Container
           isDragging={dragSnapshot.isDragging}
           isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
+          isSelected={selectedProject == project.id}
           ref={dragProvided.innerRef}
           {...dragProvided.draggableProps}
           {...dragProvided.dragHandleProps}

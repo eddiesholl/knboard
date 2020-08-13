@@ -51,7 +51,7 @@ const ProjectColumn = ({ projects }: Props) => {
               {...provided.dragHandleProps}
               id={id}
               title={title}
-              tasksCount={projects.length}
+              totalCount={projects.length}
               aria-label={`${title} task list`}
               data-testid="column-title"
             />
