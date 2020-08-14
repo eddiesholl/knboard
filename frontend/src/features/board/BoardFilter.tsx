@@ -33,10 +33,6 @@ const BoardFilter = () => {
     (state: RootState) => state.project.selectedProject
   );
 
-  if (!selectedProject) {
-    return null;
-  }
-
   const handleProjectChange = (newProject: Id | null) => {
     dispatch(changeProjectSelection(newProject));
   };
