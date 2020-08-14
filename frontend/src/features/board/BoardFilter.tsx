@@ -7,6 +7,7 @@ import ProjectChooser from "features/project/ProjectChooser";
 import { changeProjectSelection } from "features/project/ProjectSlice";
 import { Id, Label } from "types";
 import LabelChooser from "features/task/LabelChooser";
+import { setLabelsFilter } from "./BoardSlice";
 
 const Container = styled.div`
   display: flex;
@@ -34,13 +35,16 @@ const BoardFilter = () => {
   const selectedProject = useSelector(
     (state: RootState) => state.project.selectedProject
   );
+  const filterByLabels = useSelector(
+    (state: RootState) => state.board.filterByLabels
+  );
 
   const handleProjectChange = (newProject: Id | null) => {
     dispatch(changeProjectSelection(newProject));
   };
 
   const handleLabelsChange = (newLabels: Label[]) => {
-    // dispatch(changeProjectSelection(newProject));
+    dispatch(setLabelsFilter(newLabels.map((label) => label.id)));
   };
 
   return (
@@ -52,7 +56,7 @@ const BoardFilter = () => {
           customCss={projectStyles}
         />
         <LabelChooser
-          selectedLabels={[]}
+          selectedLabels={filterByLabels}
           handleLabelsChange={handleLabelsChange}
           customCss={projectStyles}
         />
