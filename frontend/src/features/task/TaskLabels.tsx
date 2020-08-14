@@ -1,5 +1,5 @@
 import React from "react";
-import { ITask, Label } from "types";
+import { Label } from "types";
 import { useSelector } from "react-redux";
 import LabelChip from "components/LabelChip";
 import styled from "@emotion/styled";
@@ -12,12 +12,16 @@ const Container = styled.div`
 `;
 
 interface Props {
-  task: ITask;
+  labelIds: number[];
 }
 
-const TaskLabels = ({ task }: Props) => {
+const TaskLabels = ({ labelIds }: Props) => {
   const labelsById = useSelector(selectLabelEntities);
-  const labels = task.labels.map((labelId) => labelsById[labelId]) as Label[];
+  const labels = labelIds
+    .map((labelId) => labelsById[labelId])
+    .sort((a, b) =>
+      a == undefined || b == undefined ? 0 : a.name.localeCompare(b.name)
+    ) as Label[];
 
   return (
     <Container>
