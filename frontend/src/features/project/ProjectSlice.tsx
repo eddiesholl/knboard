@@ -112,6 +112,7 @@ export const slice = createSlice({
         byId[p.id] = p;
       }
       state.byId = byId;
+      state.selectedProject = null;
     });
     builder.addCase(createProject.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
