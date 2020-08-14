@@ -165,7 +165,6 @@ const EditProjectDialog = () => {
   const dispatch = useDispatch();
   const labels = useSelector(selectAllLabels);
   const labelsById = useSelector(selectLabelEntities);
-  const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const projectId = useSelector(
     (state: RootState) => state.project.editDialogOpen
   );
@@ -237,20 +236,7 @@ const EditProjectDialog = () => {
     }
   }, [editingDescription]);
 
-  const findTaskColumnId = () => {
-    for (const columnId in tasksByColumn) {
-      for (const id of tasksByColumn[columnId]) {
-        if (id === projectId) {
-          return columnId;
-        }
-      }
-    }
-    return null;
-  };
-
-  const columnId = findTaskColumnId();
-
-  if (!projectId || !projectsById[projectId] || !columnId) {
+  if (!projectId || !projectsById[projectId]) {
     return null;
   }
 
