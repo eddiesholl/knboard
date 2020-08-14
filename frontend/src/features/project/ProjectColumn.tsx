@@ -10,6 +10,8 @@ import {
 } from "react-beautiful-dnd";
 import ColumnTitle from "components/ColumnTitle";
 import ProjectList from "./ProjectList";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 const Container = styled.div`
   margin: ${grid / 2}px;
@@ -38,6 +40,18 @@ const ProjectColumn = ({ projects }: Props) => {
   const index = 0;
   const title = "Projects";
 
+  const filterByLabels = useSelector(
+    (state: RootState) => state.board.filterByLabels
+  );
+
+  const filteredProjects = projects.filter(
+    (project) =>
+      filterByLabels.length == 0 ||
+      filterByLabels.some((filterByLabel) =>
+        project.labels.includes(filterByLabel)
+      )
+  );
+
   return (
     <Draggable draggableId={`col-${id}`} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
@@ -56,7 +70,11 @@ const ProjectColumn = ({ projects }: Props) => {
               data-testid="column-title"
             />
           </Header>
-          <ProjectList columnId={id} listType="PROJECT" projects={projects} />
+          <ProjectList
+            columnId={id}
+            listType="PROJECT"
+            projects={filteredProjects}
+          />
         </Container>
       )}
     </Draggable>
