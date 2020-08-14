@@ -36,13 +36,12 @@ import { Priority, BoardMember, Label, Id } from "types";
 import { createMdEditorStyles } from "styles";
 import AvatarTag from "components/AvatarTag";
 import AvatarOption from "components/AvatarOption";
-import { selectAllLabels } from "features/label/LabelSlice";
 import { getSaveShortcutLabel } from "utils/shortcuts";
-import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
 import { format } from "date-fns";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import ProjectChooser from "features/project/ProjectChooser";
+import LabelChooser from "./LabelChooser";
 
 const mdParser = new MarkdownIt();
 
@@ -75,7 +74,6 @@ const Footer = styled.div`
 const CreateTaskDialog = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const labelsOptions = useSelector(selectAllLabels);
   const members = useSelector(selectAllMembers);
   const open = useSelector((state: RootState) => state.task.createDialogOpen);
   const columnId = useSelector(
@@ -245,32 +243,10 @@ const CreateTaskDialog = () => {
           `}
         />
 
-        <Autocomplete
-          multiple
-          id="create-labels-select"
-          size="small"
-          filterSelectedOptions
-          autoHighlight
-          openOnFocus
-          options={labelsOptions}
-          getOptionLabel={(option) => option.name}
-          value={labels}
-          onChange={(_, newLabels) => setLabels(newLabels)}
-          renderInput={(params) => (
-            <TextField {...params} label="Labels" variant="outlined" />
-          )}
-          renderTags={(value, getTagProps) =>
-            value.map((option, index) => (
-              <LabelChip
-                key={option.id}
-                label={option}
-                size="small"
-                {...getTagProps({ index })}
-              />
-            ))
-          }
-          renderOption={(option) => <LabelChip label={option} size="small" />}
-          css={css`
+        <LabelChooser
+          handleLabelsChange={setLabels}
+          selectedLabels={labels.map((l) => l.id)}
+          customCss={css`
             margin-top: 1rem;
             width: 100%;
           `}
