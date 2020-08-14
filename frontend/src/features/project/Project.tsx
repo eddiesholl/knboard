@@ -112,12 +112,23 @@ const getStyle = (provided: DraggableProvided, style?: Record<string, any>) => {
   };
 };
 
-export const TaskFooter = ({ project }: { project: IProject }) => {
+const TaskCounts = styled.div`
+  font-size: 0.75em;
+  font-weight: 200;
+`;
+
+interface ProjectFooterProps {
+  project: IProject;
+  taskCounts: number[];
+}
+
+export const ProjectFooter = ({ project, taskCounts }: ProjectFooterProps) => {
   return (
     <Footer>
       <CardIcon data-testid="project-priority">
         <FontAwesomeIcon icon={faCube} color={PRIO_COLORS[project.priority]} />
       </CardIcon>
+      <TaskCounts>{taskCounts.join("-")}</TaskCounts>
     </Footer>
   );
 };
@@ -132,6 +143,15 @@ const Project = ({ project: project, style, index }: Props) => {
   const dispatch = useDispatch();
   const selectedProject = useSelector(
     (state: RootState) => state.project.selectedProject
+  );
+
+  const tasksById = useSelector((state: RootState) => state.task.byId);
+  const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
+  const taskCounts = Object.values(tasksByColumn).map(
+    (tasksInColumn) =>
+      tasksInColumn
+        .map((taskId) => tasksById[taskId])
+        .filter((task) => task.project == project.id).length
   );
 
   const handleClick = () => {
@@ -167,7 +187,7 @@ const Project = ({ project: project, style, index }: Props) => {
             <TextContent>{project.title}</TextContent>
             <DueDate dateString={project.due_date} />
             <TaskLabels labelIds={project.labels} />
-            <TaskFooter project={project} />
+            <ProjectFooter project={project} taskCounts={taskCounts} />
           </Content>
         </Container>
       )}
