@@ -1,5 +1,4 @@
 import React from "react";
-import { ITask } from "types";
 import styled from "@emotion/styled";
 import { format } from "date-fns";
 import differenceInDays from "date-fns/differenceInDays";
@@ -25,24 +24,24 @@ const Container = styled.div<ContainerProps>`
 `;
 
 interface Props {
-  task: ITask;
+  dateString: string | null;
 }
 
-const TaskDueDate = ({ task }: Props) => {
-  if (task.due_date == null) {
+const DueDate = ({ dateString }: Props) => {
+  if (dateString == null) {
     return null;
   }
 
-  const dueDate = new Date(task.due_date);
+  const dueDate = new Date(dateString);
   const distance = differenceInDays(new Date(), dueDate);
   const opacity = Math.max(Math.min(7, distance + 7), 0) / 7;
   const expired = distance >= 0;
 
   return (
     <Container opacity={opacity} expired={expired}>
-      {format(new Date(task.due_date), "dd-MM-yyyy")}
+      {format(dueDate, "dd-MM-yyyy")}
     </Container>
   );
 };
 
-export default TaskDueDate;
+export default DueDate;

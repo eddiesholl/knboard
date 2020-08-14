@@ -18,7 +18,7 @@ import TaskLabels from "./TaskLabels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { selectMembersEntities } from "features/member/MemberSlice";
-import TaskDueDate from "./TaskDueDate";
+import DueDate from "./DueDate";
 import { RootState } from "store";
 import ProjectLabel from "./ProjectLabel";
 
@@ -191,7 +191,7 @@ const Task = ({ task: task, style, index }: Props) => {
         >
           <Content>
             <TextContent>{task.title}</TextContent>
-            <TaskDueDate task={task} />
+            <DueDate dateString={task.due_date} />
             <ProjectLabel name={projectName} />
             <TaskLabels task={task} />
             <TaskFooter task={task} />
