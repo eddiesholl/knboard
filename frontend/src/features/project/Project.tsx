@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { RootState } from "store";
 import DueDate from "features/task/DueDate";
+import TaskLabels from "features/task/TaskLabels";
 
 const getBackgroundColor = (
   isDragging: boolean,
@@ -165,7 +166,7 @@ const Project = ({ project: project, style, index }: Props) => {
           <Content>
             <TextContent>{project.title}</TextContent>
             <DueDate dateString={project.due_date} />
-            {/* <TaskLabels project={project} /> */}
+            <TaskLabels labelIds={project.labels} />
             <TaskFooter project={project} />
           </Content>
         </Container>

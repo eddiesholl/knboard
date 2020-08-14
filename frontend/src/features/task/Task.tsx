@@ -193,7 +193,7 @@ const Task = ({ task: task, style, index }: Props) => {
             <TextContent>{task.title}</TextContent>
             <DueDate dateString={task.due_date} />
             <ProjectLabel name={projectName} />
-            <TaskLabels task={task} />
+            <TaskLabels labelIds={task.labels} />
             <TaskFooter task={task} />
           </Content>
         </Container>
