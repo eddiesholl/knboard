@@ -5,12 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { css } from "@emotion/core";
 import ProjectChooser from "features/project/ProjectChooser";
 import { changeProjectSelection } from "features/project/ProjectSlice";
-import { Id } from "types";
+import { Id, Label } from "types";
+import LabelChooser from "features/task/LabelChooser";
 
 const Container = styled.div`
   display: flex;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin: 0.5rem;
   font-weight: bold;
   font-size: 1.25rem;
   width: 100%;
@@ -25,6 +25,8 @@ const Items = styled.div`
 
 const projectStyles = css`
   width: 250px;
+  margin-left: 5px;
+  margin-right: 5px;
 `;
 
 const BoardFilter = () => {
@@ -37,12 +39,21 @@ const BoardFilter = () => {
     dispatch(changeProjectSelection(newProject));
   };
 
+  const handleLabelsChange = (newLabels: Label[]) => {
+    // dispatch(changeProjectSelection(newProject));
+  };
+
   return (
     <Container>
       <Items>
         <ProjectChooser
           selectedProject={selectedProject}
           handleProjectChange={handleProjectChange}
+          customCss={projectStyles}
+        />
+        <LabelChooser
+          selectedLabels={[]}
+          handleLabelsChange={handleLabelsChange}
           customCss={projectStyles}
         />
       </Items>
