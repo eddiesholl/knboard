@@ -55,15 +55,11 @@ import {
   taskSideWidth,
 } from "const";
 import Close from "components/Close";
-import {
-  selectAllLabels,
-  selectLabelEntities,
-} from "features/label/LabelSlice";
 import { formatDistanceToNow, format } from "date-fns";
 import { getSaveShortcutLabel } from "utils/shortcuts";
-import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
 import ProjectChooser from "features/project/ProjectChooser";
+import LabelChooser from "./LabelChooser";
 
 const mdParser = new MarkdownIt({ breaks: true });
 
@@ -175,8 +171,6 @@ const EditTaskDialog = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const columns = useSelector(selectAllColumns);
-  const labels = useSelector(selectAllLabels);
-  const labelsById = useSelector(selectLabelEntities);
   const columnsById = useSelector(selectColumnsEntities);
   const tasksByColumn = useSelector((state: RootState) => state.task.byColumn);
   const taskId = useSelector((state: RootState) => state.task.editDialogOpen);
@@ -507,39 +501,10 @@ const EditTaskDialog = () => {
               margin-top: 1rem;
             `}
           />
-          <Autocomplete
-            multiple
-            id="labels-select"
-            data-testid="edit-labels"
-            size="small"
-            filterSelectedOptions
-            autoHighlight
-            openOnFocus
-            blurOnSelect
-            disableClearable
-            options={labels}
-            getOptionLabel={(option) => option.name}
-            value={
-              tasksById[taskId].labels.map(
-                (labelId) => labelsById[labelId]
-              ) as Label[]
-            }
-            onChange={(_, newLabels) => handleLabelsChange(newLabels)}
-            renderInput={(params) => (
-              <TextField {...params} label="Labels" variant="outlined" />
-            )}
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => (
-                <LabelChip
-                  key={option.id}
-                  label={option}
-                  size="small"
-                  {...getTagProps({ index })}
-                />
-              ))
-            }
-            renderOption={(option) => <LabelChip label={option} size="small" />}
-            css={css`
+          <LabelChooser
+            handleLabelsChange={handleLabelsChange}
+            selectedLabels={tasksById[taskId].labels}
+            customCss={css`
               width: 100%;
               margin-top: 1rem;
               margin-bottom: 2rem;

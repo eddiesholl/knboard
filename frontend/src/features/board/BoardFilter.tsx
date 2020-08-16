@@ -5,12 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { css } from "@emotion/core";
 import ProjectChooser from "features/project/ProjectChooser";
 import { changeProjectSelection } from "features/project/ProjectSlice";
-import { Id } from "types";
+import { Id, Label } from "types";
+import LabelChooser from "features/task/LabelChooser";
+import { setLabelsFilter } from "./BoardSlice";
 
 const Container = styled.div`
   display: flex;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin: 0.5rem;
   font-weight: bold;
   font-size: 1.25rem;
   width: 100%;
@@ -25,6 +26,8 @@ const Items = styled.div`
 
 const projectStyles = css`
   width: 250px;
+  margin-left: 5px;
+  margin-right: 5px;
 `;
 
 const BoardFilter = () => {
@@ -32,13 +35,16 @@ const BoardFilter = () => {
   const selectedProject = useSelector(
     (state: RootState) => state.project.selectedProject
   );
-
-  if (!selectedProject) {
-    return null;
-  }
+  const filterByLabels = useSelector(
+    (state: RootState) => state.board.filterByLabels
+  );
 
   const handleProjectChange = (newProject: Id | null) => {
     dispatch(changeProjectSelection(newProject));
+  };
+
+  const handleLabelsChange = (newLabels: Label[]) => {
+    dispatch(setLabelsFilter(newLabels.map((label) => label.id)));
   };
 
   return (
@@ -47,6 +53,11 @@ const BoardFilter = () => {
         <ProjectChooser
           selectedProject={selectedProject}
           handleProjectChange={handleProjectChange}
+          customCss={projectStyles}
+        />
+        <LabelChooser
+          selectedLabels={filterByLabels}
+          handleLabelsChange={handleLabelsChange}
           customCss={projectStyles}
         />
       </Items>

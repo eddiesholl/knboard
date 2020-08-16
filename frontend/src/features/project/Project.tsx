@@ -7,7 +7,7 @@ import {
   DraggableStateSnapshot,
 } from "react-beautiful-dnd";
 import { N30, N0, N70, PRIMARY, Y50 } from "utils/colors";
-import { PRIO_COLORS } from "const";
+import { PRIO_COLORS, PROJECT_NO_PROJECT_ID } from "const";
 import { taskContainerStyles } from "styles";
 import { useDispatch, useSelector } from "react-redux";
 import { changeProjectSelection } from "./ProjectSlice";
@@ -151,7 +151,11 @@ const Project = ({ project: project, style, index }: Props) => {
     (tasksInColumn) =>
       tasksInColumn
         .map((taskId) => tasksById[taskId])
-        .filter((task) => task.project == project.id).length
+        .filter(
+          (task) =>
+            (project.id == PROJECT_NO_PROJECT_ID && task.project == null) ||
+            task.project == project.id
+        ).length
   );
 
   const handleClick = () => {

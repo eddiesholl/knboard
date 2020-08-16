@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { Board, IColumn, ITask, Label, NanoBoard, IProject } from "types";
+import { Board, IColumn, ITask, Label, NanoBoard, IProject, Id } from "types";
 import api, { API_BOARDS } from "api";
 import { RootState } from "store";
 import { logout } from "features/auth/AuthSlice";
@@ -14,6 +14,7 @@ interface InitialState {
   createError: string | null;
   detailLoading: boolean;
   detailError?: string;
+  filterByLabels: Id[];
 }
 
 export const initialState: InitialState = {
@@ -26,6 +27,7 @@ export const initialState: InitialState = {
   createError: null,
   detailLoading: false,
   detailError: undefined,
+  filterByLabels: [],
 };
 
 interface ColumnsResponse extends IColumn {
@@ -76,6 +78,9 @@ export const slice = createSlice({
     setCreateDialogOpen: (state, action: PayloadAction<boolean>) => {
       state.createDialogOpen = action.payload;
     },
+    setLabelsFilter: (state, action: PayloadAction<Id[]>) => {
+      state.filterByLabels = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllBoards.pending, (state) => {
@@ -100,6 +105,7 @@ export const slice = createSlice({
       state.detail = { id, name, owner, members };
       state.detailError = undefined;
       state.detailLoading = false;
+      state.filterByLabels = [];
     });
     builder.addCase(fetchBoardById.rejected, (state, action) => {
       state.detailError = action.payload;
@@ -125,7 +131,7 @@ export const slice = createSlice({
   },
 });
 
-export const { setCreateDialogOpen } = slice.actions;
+export const { setCreateDialogOpen, setLabelsFilter } = slice.actions;
 
 export const currentBoardOwner = (state: RootState) => {
   return (

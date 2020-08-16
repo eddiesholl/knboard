@@ -42,12 +42,34 @@ const Column = ({ id, title, tasks, index }: Props) => {
   const selectedProject = useSelector(
     (state: RootState) => state.project.selectedProject
   );
-  const filteredTasks = tasks.filter(
-    (task) =>
-      selectedProject == null ||
-      (selectedProject == PROJECT_NO_PROJECT_ID && task.project == null) ||
-      selectedProject == task.project
+  const projects = useSelector((state: RootState) => state.project.byId);
+  const filterByLabels = useSelector(
+    (state: RootState) => state.board.filterByLabels
   );
+  const filteredTasks = tasks
+    .filter(
+      (task) =>
+        selectedProject == null ||
+        (selectedProject == PROJECT_NO_PROJECT_ID && task.project == null) ||
+        selectedProject == task.project
+    )
+    .map((task) => {
+      return {
+        task,
+        project: task.project == null ? null : projects[task.project],
+      };
+    })
+    .filter(
+      ({ task, project }) =>
+        filterByLabels.length == 0 ||
+        filterByLabels.some(
+          (filterByLabel) =>
+            task.labels.includes(filterByLabel) ||
+            (project != null && project.labels.includes(filterByLabel))
+        )
+    )
+    .map(({ task }) => task);
+
   return (
     <Draggable draggableId={`col-${id}`} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
