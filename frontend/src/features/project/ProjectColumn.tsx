@@ -80,8 +80,6 @@ const ProjectColumn = ({ projects }: Props) => {
       const priorityB = priorityToSortValue(b.priority);
 
       return priorityB - priorityA;
-
-      // return 0;
     });
 
   return (
