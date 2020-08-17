@@ -136,7 +136,9 @@ const CreateProjectDialog = () => {
   };
 
   const handleDateChange = (date: MaterialUiPickersDate) => {
-    if (date != null && date.toString() != "Invalid Date") {
+    if (date == null) {
+      setDueDate(null);
+    } else if (date.toString() != "Invalid Date") {
       const dateString = format(new Date(date), "yyyy-MM-dd");
 
       setDueDate(dateString);
