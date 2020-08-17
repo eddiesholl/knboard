@@ -86,7 +86,7 @@ const InnerList = ({ columnId, tasks, dropProvided }: InnerListProps) => (
       ref={dropProvided.innerRef}
       css={css`
         max-height: calc(100vh - ${barHeight * 5}px);
-        overflow-y: scroll;
+        overflow-y: auto;
       `}
     >
       <InnerTaskList tasks={tasks} />

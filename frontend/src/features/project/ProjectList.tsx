@@ -85,7 +85,7 @@ const InnerList = ({ projects, dropProvided }: InnerListProps) => (
       ref={dropProvided.innerRef}
       css={css`
         max-height: calc(100vh - ${barHeight * 5}px);
-        overflow-y: scroll;
+        overflow-y: auto;
       `}
     >
       <InnerProjectList projects={projects} />
