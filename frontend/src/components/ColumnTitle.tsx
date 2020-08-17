@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "@emotion/styled";
-import { grid, borderRadius, Key, taskHeaderTextareaWidth } from "const";
+import { grid, borderRadius, Key, projectHeaderTextareaWidth } from "const";
 import { P100, PRIMARY, TASK_G as ACTION_G } from "utils/colors";
 import { TextareaAutosize, Button, Popover } from "@material-ui/core";
 import { useDispatch } from "react-redux";
@@ -31,7 +31,7 @@ const Container = styled.h4`
   textarea {
     color: ${PRIMARY};
     font-weight: bold;
-    width: ${taskHeaderTextareaWidth}px;
+    width: ${projectHeaderTextareaWidth}px;
     border: none;
     resize: none;
     border-radius: ${borderRadius}px;
@@ -54,7 +54,7 @@ const RegularTitle = styled.div`
   font-size: 14px;
   align-self: center;
   word-break: break-word;
-  width: ${taskHeaderTextareaWidth}px;
+  width: ${projectHeaderTextareaWidth}px;
   &:hover {
     cursor: pointer;
   }

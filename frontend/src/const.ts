@@ -15,7 +15,9 @@ export const imageSize = 40;
 export const barHeight = 60;
 export const sidebarWidth = 120;
 export const taskHeaderTextareaWidth = 180;
+export const projectHeaderTextareaWidth = 100;
 export const taskWidth = 250;
+export const projectWidth = 170;
 export const taskSideWidth = 220;
 export const taskDialogHeight = 600;
 
