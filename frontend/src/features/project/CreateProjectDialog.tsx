@@ -101,6 +101,7 @@ const CreateProjectDialog = () => {
       setDescription("");
       setPriority(PRIORITY_2);
       setLabels([]);
+      setDueDate(null);
     }
   };
 
