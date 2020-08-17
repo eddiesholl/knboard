@@ -255,7 +255,7 @@ const CreateTaskDialog = () => {
         <ProjectChooser
           handleProjectChange={handleProjectChange}
           selectedProject={project}
-          css={css`
+          customCss={css`
             width: 100%;
             margin-top: 1rem;
             margin-bottom: 2rem;
