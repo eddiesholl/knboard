@@ -9,7 +9,7 @@ env_file=../.env
 [knboard:vars]
 repo_folder=/srv/knboard/
 repo_name=eddiesholl/knboard
-repo_branch=master
+repo_branch=deploy
 letsencrypt_email=info@knboard.com
 domain_name=192.168.0.173
 create_user=rareba
