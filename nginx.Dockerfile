@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy npm package requirements to the workdir
 COPY ./frontend/package.json /app/
 
+ENV NODE_ENV production
+
 # Install dependencies into workdir node_modules
 RUN yarn install
 
