@@ -4,12 +4,12 @@ ansible_become_user=root
 env_file=../.env
 
 [knboard]
-192.168.0.173
+raspberrypi.local
 
 [knboard:vars]
 repo_folder=/srv/knboard/
 repo_name=eddiesholl/knboard
 repo_branch=deploy
 letsencrypt_email=info@knboard.com
-domain_name=192.168.0.173
+domain_name=raspberrypi.local
 create_user=rareba
