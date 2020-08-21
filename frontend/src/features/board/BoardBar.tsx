@@ -119,7 +119,6 @@ const BoardBar = () => {
               />
             ))}
           </AvatarGroup>
-          {boardOwner && <MemberInvite boardId={detail.id} />}
         </Left>
         <BoardFilter />
         <Right>
