@@ -11,19 +11,10 @@ import api, { API_SORT_TASKS, API_TASKS } from "api";
 import { addColumn, deleteColumn } from "features/column/ColumnSlice";
 import { deleteLabel } from "features/label/LabelSlice";
 import { removeBoardMember } from "features/member/MemberSlice";
-
-const priorityToSortValue = (p: PriorityValue) =>
-  p == "H" ? 3 : p == "M" ? 2 : 1;
-
-const sortTasks = (ta: ITask, tb: ITask) => {
-  const va = priorityToSortValue(ta.priority);
-  const vb = priorityToSortValue(tb.priority);
-
-  return vb - va;
-};
+import { byDueAndPriority } from "utils/sorting";
 
 const sortTasksInColumn = (tasksToSort: ITask[]) => {
-  return tasksToSort.sort(sortTasks).map((task) => task.id);
+  return tasksToSort.sort(byDueAndPriority).map((task) => task.id);
 };
 
 type TasksById = Record<string, ITask>;

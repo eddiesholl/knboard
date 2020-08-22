@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { format } from "date-fns";
-import differenceInDays from "date-fns/differenceInDays";
+import { differenceInCalendarDays } from "date-fns/esm";
 
 interface ContainerProps {
   opacity: number;
@@ -33,13 +33,25 @@ const DueDate = ({ dateString }: Props) => {
   }
 
   const dueDate = new Date(dateString);
-  const distance = differenceInDays(new Date(), dueDate);
+  const distance = differenceInCalendarDays(new Date(), dueDate);
   const opacity = Math.max(Math.min(7, distance + 7), 0) / 7;
   const expired = distance >= 0;
+  const content =
+    distance == 0
+      ? "Today"
+      : distance == 1
+      ? "1 day ago"
+      : distance > 1
+      ? `${distance} days ago`
+      : distance == -1
+      ? "1 day left"
+      : distance > -7
+      ? `${-distance} days left`
+      : format(dueDate, "dd-MM-yyyy");
 
   return (
     <Container opacity={opacity} expired={expired}>
-      {format(dueDate, "dd-MM-yyyy")}
+      {content}
     </Container>
   );
 };

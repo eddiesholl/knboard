@@ -70,6 +70,20 @@ const Board = () => {
     }
   }, [id]);
 
+  const detailDataExists = detail?.id.toString() === id;
+
+  React.useEffect(() => {
+    if (detailDataExists && detail && detail.name) {
+      document.title = `Kn:${detail.name}`;
+    }
+  }, [detail]);
+
+  React.useEffect(() => {
+    return () => {
+      document.title = "Knboard";
+    };
+  }, []);
+
   const onDragEnd = (result: DropResult) => {
     // dropped nowhere
     if (!result.destination) {
@@ -109,8 +123,6 @@ const Board = () => {
     });
     dispatch(updateTasksByColumn(data.tasksByColumn));
   };
-
-  const detailDataExists = detail?.id.toString() === id;
 
   if (error) {
     return <PageError>{error}</PageError>;
