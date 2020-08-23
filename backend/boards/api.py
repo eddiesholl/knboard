@@ -2,6 +2,7 @@ from itertools import chain
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import Prefetch
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -51,7 +52,7 @@ class BoardViewSet(
         qs = super().get_queryset().filter(members=user)
 
         if self.action == "retrieve":
-            return qs.prefetch_related("columns__tasks")
+            return qs.prefetch_related(Prefetch("columns__tasks", queryset=Task.objects.filter(closed=False)))
         return qs
 
     def get_member(self):
