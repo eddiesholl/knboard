@@ -153,9 +153,9 @@ const Board = () => {
                     id={column.id}
                     title={column.title}
                     index={index}
-                    tasks={tasksByColumn[column.id].map(
-                      (taskId) => tasksById[taskId]
-                    )}
+                    tasks={tasksByColumn[column.id]
+                      .map((taskId) => tasksById[taskId])
+                      .filter((task) => !task.closed)}
                   />
                 ))}
                 {provided.placeholder}

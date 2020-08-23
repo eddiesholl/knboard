@@ -134,6 +134,7 @@ const CreateTaskDialog = () => {
         due_date: dueDate,
         // eslint-disable-next-line @typescript-eslint/camelcase
         parent_task: null,
+        closed: false,
       };
       dispatch(createTask(newTask));
     }

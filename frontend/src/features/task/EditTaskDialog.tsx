@@ -15,6 +15,7 @@ import {
   deleteTask,
   updateTasksByColumn,
   patchTask,
+  closeTask,
 } from "./TaskSlice";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
@@ -25,7 +26,6 @@ import {
   faAlignLeft,
   faCube,
 } from "@fortawesome/free-solid-svg-icons";
-import { createInfoToast } from "features/toast/ToastSlice";
 import { PRIMARY, TASK_G } from "utils/colors";
 import { IColumn, TasksByColumn, Id, Priority, Label } from "types";
 import {
@@ -324,8 +324,11 @@ const EditTaskDialog = () => {
     }
   };
 
-  const handleNotImplemented = () => {
-    dispatch(createInfoToast("Not implemented yet 😟"));
+  const handleCloseTask = () => {
+    if (window.confirm("Are you sure you are ready to close this task?")) {
+      dispatch(closeTask(task.id));
+      handleClose();
+    }
   };
 
   const handleDelete = () => {
@@ -540,7 +543,7 @@ const EditTaskDialog = () => {
           <ButtonsContainer>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faLock} />}
-              onClick={handleNotImplemented}
+              onClick={handleCloseTask}
               size="small"
               css={css`
                 font-size: 12px;
@@ -548,7 +551,7 @@ const EditTaskDialog = () => {
                 color: ${TASK_G};
               `}
             >
-              Lock task
+              Close task
             </Button>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faTrash} />}

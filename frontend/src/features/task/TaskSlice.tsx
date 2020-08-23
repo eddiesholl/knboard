@@ -88,6 +88,18 @@ export const deleteTask = createAsyncThunk<Id, Id>(
   }
 );
 
+export const closeTask = createAsyncThunk<ITask, Id>(
+  "task/closeTaskStatus",
+  async (id, { dispatch }) => {
+    const response = await api.patch(`${API_TASKS}${id}/`, {
+      id,
+      closed: true,
+    });
+    dispatch(createInfoToast("Task closed"));
+    return response.data;
+  }
+);
+
 const buildTasksByParent = (tasks: TasksById): TasksByParent => {
   const byParent: TasksByParent = {};
 
@@ -138,6 +150,10 @@ export const slice = createSlice({
       state.byParent = buildTasksByParent(byId);
     });
     builder.addCase(patchTask.fulfilled, (state, action) => {
+      state.byId[action.payload.id] = action.payload;
+      state.byParent = buildTasksByParent(state.byId);
+    });
+    builder.addCase(closeTask.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
       state.byParent = buildTasksByParent(state.byId);
     });

@@ -56,6 +56,7 @@ export interface ITask {
   due_date: string | null;
   project: Id | null;
   parent_task: Id | null;
+  closed: boolean;
 }
 
 export interface IProject {
