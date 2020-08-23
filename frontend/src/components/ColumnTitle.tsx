@@ -5,7 +5,11 @@ import { P100, PRIMARY, TASK_G as ACTION_G } from "utils/colors";
 import { TextareaAutosize, Button, Popover } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisV,
+  faTrash,
+  faDoorClosed,
+} from "@fortawesome/free-solid-svg-icons";
 import { Id } from "types";
 import { patchColumn, deleteColumn } from "features/column/ColumnSlice";
 import { css } from "@emotion/core";
@@ -76,6 +80,9 @@ const Count = styled.div`
 `;
 
 const OptionsContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 0.75rem;
 `;
 
@@ -84,6 +91,7 @@ interface Props {
   title: string;
   totalCount: number;
   filteredCount?: number;
+  closeTasks?: () => void;
 }
 
 const ColumnTitle = ({
@@ -91,6 +99,7 @@ const ColumnTitle = ({
   title,
   totalCount,
   filteredCount,
+  closeTasks,
   ...props
 }: Props) => {
   const dispatch = useDispatch();
@@ -158,6 +167,16 @@ const ColumnTitle = ({
     }
   };
 
+  const handleCloseTasks = () => {
+    if (
+      closeTasks &&
+      window.confirm("Are you sure you're ready to close all these tasks?")
+    ) {
+      closeTasks();
+      handleOptionsClose();
+    }
+  };
+
   const open = Boolean(anchorEl);
   const popoverId = open ? `col-${id}options-popover` : undefined;
 
@@ -216,6 +235,19 @@ const ColumnTitle = ({
           }}
         >
           <OptionsContent>
+            <Button
+              startIcon={<FontAwesomeIcon fixedWidth icon={faDoorClosed} />}
+              onClick={handleCloseTasks}
+              data-testid="close-tasks-column"
+              size="small"
+              css={css`
+                font-size: 12px;
+                font-weight: bold;
+                color: ${ACTION_G};
+              `}
+            >
+              Close tasks
+            </Button>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faTrash} />}
               onClick={handleDelete}

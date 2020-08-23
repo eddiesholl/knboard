@@ -88,15 +88,26 @@ export const deleteTask = createAsyncThunk<Id, Id>(
   }
 );
 
-export const closeTask = createAsyncThunk<ITask, Id>(
+export const closeTask = createAsyncThunk(
   "task/closeTaskStatus",
-  async (id, { dispatch }) => {
+  async (id: Id, { dispatch }) => {
     const response = await api.patch(`${API_TASKS}${id}/`, {
       id,
       closed: true,
     });
     dispatch(createInfoToast("Task closed"));
     return response.data;
+  }
+);
+
+export const closeTasks = createAsyncThunk<ITask[], Id[]>(
+  "task/closeTasksStatus",
+  async (ids, { dispatch }) => {
+    const responses = await Promise.all(
+      ids.map((id) => dispatch(closeTask(id)))
+    );
+    dispatch(createInfoToast("Tasks closed"));
+    return responses.map((response) => response.payload);
   }
 );
 

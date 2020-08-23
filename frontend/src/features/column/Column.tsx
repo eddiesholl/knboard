@@ -10,8 +10,9 @@ import {
 } from "react-beautiful-dnd";
 import TaskList from "features/task/TaskList";
 import ColumnTitle from "components/ColumnTitle";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "store";
+import { closeTasks } from "features/task/TaskSlice";
 
 const Container = styled.div`
   margin: ${grid / 2}px;
@@ -39,6 +40,7 @@ type Props = {
 };
 
 const Column = ({ id, title, tasks, index }: Props) => {
+  const dispatch = useDispatch();
   const selectedProject = useSelector(
     (state: RootState) => state.project.selectedProject
   );
@@ -70,6 +72,9 @@ const Column = ({ id, title, tasks, index }: Props) => {
     )
     .map(({ task }) => task);
 
+  const handleCloseTasks = () =>
+    dispatch(closeTasks(filteredTasks.map((task) => task.id)));
+
   return (
     <Draggable draggableId={`col-${id}`} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
@@ -87,6 +92,7 @@ const Column = ({ id, title, tasks, index }: Props) => {
               filteredCount={filteredTasks.length}
               aria-label={`${title} task list`}
               data-testid="column-title"
+              closeTasks={handleCloseTasks}
             />
           </Header>
           <TaskList columnId={id} listType="TASK" tasks={filteredTasks} />
