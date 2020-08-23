@@ -81,7 +81,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "column",
             "due_date",
             "project",
-            "parent_task"
+            "parent_task",
+            "closed"
         ]
 
 class ProjectSerializer(serializers.ModelSerializer):

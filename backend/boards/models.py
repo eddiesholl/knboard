@@ -90,6 +90,7 @@ class Task(SortableMixin, TimeStampedModel):
     task_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
     due_date = models.DateField(null=True)
     parent_task = models.ForeignKey('self', related_name="child_tasks", null=True, on_delete=models.SET_NULL)
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.id} - {self.title}"
