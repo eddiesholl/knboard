@@ -136,6 +136,9 @@ export const slice = createSlice({
     });
     builder.addCase(closeProject.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
+      if (state.selectedProject == action.payload.id) {
+        state.selectedProject = null;
+      }
     });
     builder.addCase(deleteProject.fulfilled, (state, action) => {
       delete state.byId[action.payload];

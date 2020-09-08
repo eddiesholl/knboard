@@ -57,6 +57,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import { getSaveShortcutLabel } from "utils/shortcuts";
 import LabelChip from "components/LabelChip";
 import PriorityOption from "components/PriorityOption";
+import { closeTasks } from "features/task/TaskSlice";
 
 const mdParser = new MarkdownIt({ breaks: true });
 
@@ -172,7 +173,7 @@ const EditProjectDialog = () => {
   const projectId = useSelector(
     (state: RootState) => state.project.editDialogOpen
   );
-  // const tasksById = useSelector((state: RootState) => state.task.byId);
+  const tasksById = useSelector((state: RootState) => state.task.byId);
   const projectsById = useSelector((state: RootState) => state.project.byId);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -287,6 +288,19 @@ const EditProjectDialog = () => {
 
   const handleCloseProject = () => {
     if (window.confirm("Are you sure you are ready to close this project?")) {
+      const linkedTasks = Object.values(tasksById)
+        .filter((task) => task.project == projectId)
+        .map((task) => task.id);
+
+      if (linkedTasks.length > 0) {
+        const closeTasksConfirmation = window.confirm(
+          `Do you want to close ${linkedTasks.length} linked tasks as well?`
+        );
+
+        if (closeTasksConfirmation) {
+          dispatch(closeTasks(linkedTasks));
+        }
+      }
       dispatch(closeProject(project.id));
       handleClose();
     }
