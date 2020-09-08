@@ -14,7 +14,13 @@ import CreateTaskDialog from "features/task/CreateTaskDialog";
 import EditTaskDialog from "features/task/EditTaskDialog";
 import CreateProjectDialog from "features/project/CreateProjectDialog";
 import EditProjectDialog from "features/project/EditProjectDialog";
-import { Button } from "@material-ui/core";
+import {
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@material-ui/core";
 import { PRIMARY } from "utils/colors";
 import { addColumn } from "features/column/ColumnSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,6 +44,10 @@ const Container = styled.div`
   font-size: 1.25rem;
 `;
 
+// const FormControl = styled.div`
+//   min-width: 120px;
+// `;
+
 const Items = styled.div`
   width: 100%;
   display: flex;
@@ -59,6 +69,10 @@ const Name = styled.div`
   color: #6869f6;
 `;
 
+const nameStyles = styled.div`
+  color: #6869f6;
+`;
+
 const buttonStyles = css`
   color: ${PRIMARY};
   .MuiButton-iconSizeSmall > *:first-of-type {
@@ -66,11 +80,28 @@ const buttonStyles = css`
   }
 `;
 
+const switchOutlineStyles = css`
+  min-width: 120px;
+  max-height: 40px;
+  overflow: hidden;
+`;
+const switchLabelStyles = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(10px, 12px);
+  color: #6869f6;
+`;
+const switchSelectStyles = css`
+  padding: 0px;
+`;
+
 const BoardBar = () => {
   const dispatch = useDispatch();
   const members = useSelector(selectAllMembers);
   const error = useSelector((state: RootState) => state.board.detailError);
   const detail = useSelector((state: RootState) => state.board.detail);
+  const boards = useSelector((state: RootState) => state.board.all);
   const boardOwner = useSelector(currentBoardOwner);
   const { id } = useParams();
   const detailDataExists = detail?.id.toString() === id;
@@ -87,11 +118,57 @@ const BoardBar = () => {
     dispatch(setDialogOpen(true));
   };
 
+  const handleBoardSwitch = () => {
+    return null;
+  };
+
   return (
     <Container>
       <Items>
         <Left>
-          <Name>{detail.name}</Name>
+          <FormControl variant="outlined" css={switchOutlineStyles}>
+            {/* <InputLabel
+              htmlFor="outlined-age-native-simple"
+              id="demo-simple-select-label"
+            > */}
+            {/* <label
+              htmlFor="outlined-age-native-simple"
+              id="demo-simple-select-label"
+              css={switchLabelStyles}
+            >
+              {detail.name}
+            </label> */}
+            {/* </InputLabel> */}
+            {/* <Name id="demo-simple-select-label">{detail.name}</Name> */}
+            <Select
+              // native
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={id}
+              onChange={handleBoardSwitch}
+              css={switchSelectStyles}
+              inputProps={{
+                name: "age",
+                id: "outlined-age-native-simple",
+              }}
+            >
+              {/* <MenuItem key={"foo"} value={"bar"}>
+                baz
+              </MenuItem>
+              <MenuItem key={"fooa"} value={"bara"}>
+                baza
+              </MenuItem>
+              <div>{boards.length}</div> */}
+
+              {boards.map((board) => {
+                return (
+                  <MenuItem key={board.id} value={board.id}>
+                    <Name>{board.name}</Name>
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
           <AvatarGroup
             max={3}
             data-testid="member-group"

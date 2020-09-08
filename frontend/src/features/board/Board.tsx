@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateTasksByColumn } from "features/task/TaskSlice";
 import { updateColumns, columnSelectors } from "features/column/ColumnSlice";
 import { useParams } from "react-router-dom";
-import { fetchBoardById } from "./BoardSlice";
+import { fetchBoardById, fetchAllBoards } from "./BoardSlice";
 import Spinner from "components/Spinner";
 import { barHeight, sidebarWidth, DROPPABLE_PROJECT_ID } from "const";
 import PageError from "components/PageError";
@@ -65,6 +65,7 @@ const Board = () => {
   const { id } = useParams();
 
   React.useEffect(() => {
+    dispatch(fetchAllBoards());
     if (id) {
       dispatch(fetchBoardById(id));
     }
