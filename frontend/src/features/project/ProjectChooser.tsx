@@ -19,6 +19,8 @@ const ProjectChooser = ({
   customCss,
 }: Props) => {
   const projectsById = useSelector((state: RootState) => state.project.byId);
+  const targetProject =
+    selectedProject != null ? projectsById[selectedProject] : null;
 
   return (
     <Autocomplete
@@ -30,10 +32,11 @@ const ProjectChooser = ({
       openOnFocus
       blurOnSelect
       options={Object.values(projectsById)
+        .filter((project) => !project.closed)
         .sort((a, b) => a.title.localeCompare(b.title))
         .map((p) => p.id)}
       getOptionLabel={(option) => projectsById[option].title}
-      value={selectedProject}
+      value={targetProject && !targetProject.closed ? selectedProject : null}
       onChange={(_: any, newParent: Id | null) =>
         handleProjectChange(newParent)
       }
