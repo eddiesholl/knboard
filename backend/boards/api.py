@@ -52,7 +52,10 @@ class BoardViewSet(
         qs = super().get_queryset().filter(members=user)
 
         if self.action == "retrieve":
-            return qs.prefetch_related(Prefetch("columns__tasks", queryset=Task.objects.filter(closed=False)))
+            return qs.prefetch_related(
+                # when we need to filter out closed projects, we can enable this
+                # Prefetch("projects", queryset=Project.objects.filter(closed=False)),
+                Prefetch("columns__tasks", queryset=Task.objects.filter(closed=False)))
         return qs
 
     def get_member(self):
