@@ -27,7 +27,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { setDialogOpen } from "features/label/LabelSlice";
 import LabelDialog from "features/label/LabelDialog";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import {
   selectAllMembers,
   setMemberListOpen,
@@ -104,6 +104,7 @@ const BoardBar = () => {
   const boards = useSelector((state: RootState) => state.board.all);
   const boardOwner = useSelector(currentBoardOwner);
   const { id } = useParams();
+  const history = useHistory();
   const detailDataExists = detail?.id.toString() === id;
 
   if (!detailDataExists || error || !detail) {
@@ -118,8 +119,10 @@ const BoardBar = () => {
     dispatch(setDialogOpen(true));
   };
 
-  const handleBoardSwitch = () => {
-    return null;
+  const handleBoardSwitch = (event: React.ChangeEvent<{ value: any }>) => {
+    console.log(event.target.value);
+    history.push(`/b/${event.target.value}`);
+    // return null;
   };
 
   return (
