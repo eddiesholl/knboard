@@ -128,6 +128,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "labels",
             "project_order",
             "due_date",
+            "closed",
         ]
 
 class ColumnSerializer(BoardModelSerializer):

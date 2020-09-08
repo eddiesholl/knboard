@@ -70,6 +70,7 @@ class Project(SortableMixin, TimeStampedModel):
     labels = models.ManyToManyField(Label, related_name="projects")
     project_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
     due_date = models.DateField(null=True)
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.id} - {self.title}"
