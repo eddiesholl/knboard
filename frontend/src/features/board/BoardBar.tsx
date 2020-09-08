@@ -98,7 +98,6 @@ const BoardBar = () => {
         <Left>
           <FormControl variant="outlined" css={switchOutlineStyles}>
             <Select
-              // native
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={id}
