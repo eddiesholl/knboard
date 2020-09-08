@@ -68,6 +68,7 @@ export interface IProject {
   labels: Id[];
   priority: PriorityValue;
   due_date: string | null;
+  closed: boolean;
 }
 
 export type NewProject = Omit<IProject, "id" | "created" | "modified">;

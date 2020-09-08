@@ -124,6 +124,7 @@ const CreateProjectDialog = () => {
         board: boardId,
         // eslint-disable-next-line @typescript-eslint/camelcase
         due_date: dueDate,
+        closed: false,
       };
       dispatch(createProject(newProject));
     }

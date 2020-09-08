@@ -10,7 +10,12 @@ import {
 } from "@material-ui/core";
 import { RootState } from "store";
 import { useSelector, useDispatch } from "react-redux";
-import { setEditDialogOpen, deleteProject, patchProject } from "./ProjectSlice";
+import {
+  setEditDialogOpen,
+  closeProject,
+  deleteProject,
+  patchProject,
+} from "./ProjectSlice";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +25,6 @@ import {
   faAlignLeft,
   faCube,
 } from "@fortawesome/free-solid-svg-icons";
-import { createInfoToast } from "features/toast/ToastSlice";
 import { PRIMARY, TASK_G } from "utils/colors";
 import { Priority, Label } from "types";
 import { Autocomplete } from "@material-ui/lab";
@@ -281,8 +285,11 @@ const EditProjectDialog = () => {
     }
   };
 
-  const handleNotImplemented = () => {
-    dispatch(createInfoToast("Not implemented yet 😟"));
+  const handleCloseProject = () => {
+    if (window.confirm("Are you sure you are ready to close this project?")) {
+      dispatch(closeProject(project.id));
+      handleClose();
+    }
   };
 
   const handleDelete = () => {
@@ -488,7 +495,7 @@ const EditProjectDialog = () => {
           <ButtonsContainer>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faLock} />}
-              onClick={handleNotImplemented}
+              onClick={handleCloseProject}
               size="small"
               css={css`
                 font-size: 12px;
@@ -496,7 +503,7 @@ const EditProjectDialog = () => {
                 color: ${TASK_G};
               `}
             >
-              Lock project
+              Close project
             </Button>
             <Button
               startIcon={<FontAwesomeIcon fixedWidth icon={faTrash} />}

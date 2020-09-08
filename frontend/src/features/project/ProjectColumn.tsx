@@ -46,6 +46,7 @@ const ProjectColumn = ({ projects }: Props) => {
   );
 
   const filteredProjects = projects
+    .filter((project) => !project.closed)
     .filter(
       (project) =>
         filterByLabels.length == 0 ||

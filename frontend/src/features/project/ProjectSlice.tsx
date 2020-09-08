@@ -24,6 +24,7 @@ const noProject: IProject = {
   priority: "M",
   // eslint-disable-next-line @typescript-eslint/camelcase
   due_date: null,
+  closed: false,
 };
 
 export const initialState: InitialState = {
@@ -83,6 +84,18 @@ export const deleteProject = createAsyncThunk<Id, Id>(
   }
 );
 
+export const closeProject = createAsyncThunk(
+  "project/closeProjectStatus",
+  async (id: Id, { dispatch }) => {
+    const response = await api.patch(`${API_PROJECTS}${id}/`, {
+      id,
+      closed: true,
+    });
+    dispatch(createInfoToast("Project closed"));
+    return response.data;
+  }
+);
+
 export const slice = createSlice({
   name: "project",
   initialState,
@@ -119,6 +132,9 @@ export const slice = createSlice({
       state.createDialogOpen = false;
     });
     builder.addCase(patchProject.fulfilled, (state, action) => {
+      state.byId[action.payload.id] = action.payload;
+    });
+    builder.addCase(closeProject.fulfilled, (state, action) => {
       state.byId[action.payload.id] = action.payload;
     });
     builder.addCase(deleteProject.fulfilled, (state, action) => {
