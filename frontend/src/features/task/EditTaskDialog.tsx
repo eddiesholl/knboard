@@ -22,7 +22,7 @@ import { css } from "@emotion/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
-  faLock,
+  faDoorClosed,
   faAlignLeft,
   faCube,
 } from "@fortawesome/free-solid-svg-icons";
@@ -542,7 +542,7 @@ const EditTaskDialog = () => {
 
           <ButtonsContainer>
             <Button
-              startIcon={<FontAwesomeIcon fixedWidth icon={faLock} />}
+              startIcon={<FontAwesomeIcon fixedWidth icon={faDoorClosed} />}
               onClick={handleCloseTask}
               size="small"
               css={css`

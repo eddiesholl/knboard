@@ -21,7 +21,7 @@ import { css } from "@emotion/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
-  faLock,
+  faDoorClosed,
   faAlignLeft,
   faCube,
 } from "@fortawesome/free-solid-svg-icons";
@@ -494,7 +494,7 @@ const EditProjectDialog = () => {
 
           <ButtonsContainer>
             <Button
-              startIcon={<FontAwesomeIcon fixedWidth icon={faLock} />}
+              startIcon={<FontAwesomeIcon fixedWidth icon={faDoorClosed} />}
               onClick={handleCloseProject}
               size="small"
               css={css`
