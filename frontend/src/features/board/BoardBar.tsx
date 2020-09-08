@@ -6,28 +6,20 @@ import { barHeight } from "const";
 import { AvatarGroup } from "@material-ui/lab";
 import { css } from "@emotion/core";
 import { avatarStyles } from "styles";
-import MemberInvite from "features/member/MemberInvite";
 import MemberDetail from "features/member/MemberDetail";
 import MemberDialog from "features/member/MemberDialog";
-import { currentBoardOwner } from "./BoardSlice";
 import CreateTaskDialog from "features/task/CreateTaskDialog";
 import EditTaskDialog from "features/task/EditTaskDialog";
 import CreateProjectDialog from "features/project/CreateProjectDialog";
 import EditProjectDialog from "features/project/EditProjectDialog";
-import {
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@material-ui/core";
+import { Button, Select, MenuItem, FormControl } from "@material-ui/core";
 import { PRIMARY } from "utils/colors";
 import { addColumn } from "features/column/ColumnSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { setDialogOpen } from "features/label/LabelSlice";
 import LabelDialog from "features/label/LabelDialog";
-import { useHistory, useParams, Link } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import {
   selectAllMembers,
   setMemberListOpen,
@@ -43,10 +35,6 @@ const Container = styled.div`
   font-weight: bold;
   font-size: 1.25rem;
 `;
-
-// const FormControl = styled.div`
-//   min-width: 120px;
-// `;
 
 const Items = styled.div`
   width: 100%;
@@ -69,10 +57,6 @@ const Name = styled.div`
   color: #6869f6;
 `;
 
-const nameStyles = styled.div`
-  color: #6869f6;
-`;
-
 const buttonStyles = css`
   color: ${PRIMARY};
   .MuiButton-iconSizeSmall > *:first-of-type {
@@ -85,13 +69,7 @@ const switchOutlineStyles = css`
   max-height: 40px;
   overflow: hidden;
 `;
-const switchLabelStyles = css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(10px, 12px);
-  color: #6869f6;
-`;
+
 const switchSelectStyles = css`
   padding: 0px;
 `;
@@ -102,7 +80,6 @@ const BoardBar = () => {
   const error = useSelector((state: RootState) => state.board.detailError);
   const detail = useSelector((state: RootState) => state.board.detail);
   const boards = useSelector((state: RootState) => state.board.all);
-  const boardOwner = useSelector(currentBoardOwner);
   const { id } = useParams();
   const history = useHistory();
   const detailDataExists = detail?.id.toString() === id;
@@ -120,9 +97,7 @@ const BoardBar = () => {
   };
 
   const handleBoardSwitch = (event: React.ChangeEvent<{ value: any }>) => {
-    console.log(event.target.value);
     history.push(`/b/${event.target.value}`);
-    // return null;
   };
 
   return (
@@ -130,19 +105,6 @@ const BoardBar = () => {
       <Items>
         <Left>
           <FormControl variant="outlined" css={switchOutlineStyles}>
-            {/* <InputLabel
-              htmlFor="outlined-age-native-simple"
-              id="demo-simple-select-label"
-            > */}
-            {/* <label
-              htmlFor="outlined-age-native-simple"
-              id="demo-simple-select-label"
-              css={switchLabelStyles}
-            >
-              {detail.name}
-            </label> */}
-            {/* </InputLabel> */}
-            {/* <Name id="demo-simple-select-label">{detail.name}</Name> */}
             <Select
               // native
               labelId="demo-simple-select-label"
@@ -155,14 +117,6 @@ const BoardBar = () => {
                 id: "outlined-age-native-simple",
               }}
             >
-              {/* <MenuItem key={"foo"} value={"bar"}>
-                baz
-              </MenuItem>
-              <MenuItem key={"fooa"} value={"bara"}>
-                baza
-              </MenuItem>
-              <div>{boards.length}</div> */}
-
               {boards.map((board) => {
                 return (
                   <MenuItem key={board.id} value={board.id}>
