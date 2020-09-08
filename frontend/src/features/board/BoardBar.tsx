@@ -3,10 +3,7 @@ import styled from "@emotion/styled";
 import { RootState } from "store";
 import { useSelector, useDispatch } from "react-redux";
 import { barHeight } from "const";
-import { AvatarGroup } from "@material-ui/lab";
 import { css } from "@emotion/core";
-import { avatarStyles } from "styles";
-import MemberDetail from "features/member/MemberDetail";
 import MemberDialog from "features/member/MemberDialog";
 import CreateTaskDialog from "features/task/CreateTaskDialog";
 import EditTaskDialog from "features/task/EditTaskDialog";
@@ -20,10 +17,6 @@ import { faPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { setDialogOpen } from "features/label/LabelSlice";
 import LabelDialog from "features/label/LabelDialog";
 import { useHistory, useParams } from "react-router-dom";
-import {
-  selectAllMembers,
-  setMemberListOpen,
-} from "features/member/MemberSlice";
 import MemberListDialog from "features/member/MemberList";
 import BoardFilter from "./BoardFilter";
 
@@ -76,7 +69,6 @@ const switchSelectStyles = css`
 
 const BoardBar = () => {
   const dispatch = useDispatch();
-  const members = useSelector(selectAllMembers);
   const error = useSelector((state: RootState) => state.board.detailError);
   const detail = useSelector((state: RootState) => state.board.detail);
   const boards = useSelector((state: RootState) => state.board.all);
@@ -126,33 +118,6 @@ const BoardBar = () => {
               })}
             </Select>
           </FormControl>
-          <AvatarGroup
-            max={3}
-            data-testid="member-group"
-            css={css`
-              margin-left: 1.5rem;
-              & .MuiAvatarGroup-avatar {
-                ${avatarStyles}
-                border: none;
-              }
-              &:hover {
-                cursor: pointer;
-              }
-            `}
-            onClick={(e: any) => {
-              if (e.target.classList.contains("MuiAvatarGroup-avatar")) {
-                dispatch(setMemberListOpen(true));
-              }
-            }}
-          >
-            {members.map((member) => (
-              <MemberDetail
-                key={member.id}
-                member={member}
-                isOwner={detail.owner === member.id}
-              />
-            ))}
-          </AvatarGroup>
         </Left>
         <BoardFilter />
         <Right>
